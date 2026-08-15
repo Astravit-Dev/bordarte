@@ -1,50 +1,73 @@
 ---
+import { Picture } from 'astro:assets'
+import logo from '@/assets/brand/logo-bordarte.png'
+
+/**
+ * The real embroidered wordmark, replacing the previous script-font rendering.
+ *
+ * The artwork is white with a soft grey relief, so it only works on the dark
+ * navy `--primary` surface — which is the only place the logo appears (header
+ * and footer). There is deliberately no light-background variant: shipping one
+ * prop that renders an invisible logo is worse than not having the option.
+ *
+ * The tagline stays as live text rather than using the version baked into the
+ * source lockup: at header size that baked text renders about 8 px tall and
+ * turns to mush, and as markup it stays selectable, translatable and legible.
+ */
 interface Props {
-  variant?: 'light' | 'dark'
-  showTagline?: boolean
   /** The header/footer logo links home; on the home page itself it should not. */
   href?: string | null
+  showTagline?: boolean
+  /** Above the fold in the header, below it in the footer. */
+  priority?: boolean
+  /** Tailwind height utility for the wordmark. */
+  size?: string
   class?: string
 }
 
-const { variant = 'light', showTagline = true, href = '/', class: className } = Astro.props
-
-const tone = variant === 'light' ? 'text-primary-foreground' : 'text-primary'
-const taglineTone = variant === 'light' ? 'text-on-primary-subtle' : 'text-muted-foreground'
+const {
+  href = '/',
+  showTagline = true,
+  priority = false,
+  size = 'h-11',
+  class: className,
+} = Astro.props
 
 const Tag = href ? 'a' : 'div'
 ---
 
-{/*
-  No aria-label: the link's own text ("Bordarte" + the tagline) becomes its
-  accessible name. An aria-label that omitted the tagline made the accessible
-  name a mismatch for the visible text, which fails WCAG 2.5.3 and confuses
-  voice control and browsing agents that target elements by their visible label.
-*/}
-<Tag href={href ?? undefined} class:list={['group flex items-center gap-2.5', className]}>
-  <svg
-    viewBox="0 0 48 44"
-    class:list={['h-8 w-9 shrink-0 transition-transform group-hover:scale-105', tone]}
-    fill="none"
-    aria-hidden="true"
-    focusable="false"
-  >
-    <path
-      d="M24 40.5C24 40.5 3 28.7 3 14.8C3 7.6 8.6 3 14.6 3C19 3 22.3 5.4 24 8.8C25.7 5.4 29 3 33.4 3C39.4 3 45 7.6 45 14.8C45 28.7 24 40.5 24 40.5Z"
-      stroke="currentColor"
-      stroke-width="2.4"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-dasharray="5.5 5.5"></path>
-  </svg>
-  <span class="flex flex-col leading-none">
-    <span class:list={['font-script text-3xl leading-none', tone]}>Bordarte</span>
-    {
-      showTagline && (
-        <span class:list={['mt-0.5 text-[9px] font-medium tracking-[0.22em] uppercase', taglineTone]}>
-          Bordados que dejan huella
-        </span>
-      )
-    }
-  </span>
+<Tag
+  href={href ?? undefined}
+  class:list={['group inline-flex flex-col gap-1', className]}
+>
+  {/*
+    AVIF first: the wordmark is a soft relief with an alpha channel, which AVIF
+    stores far more cheaply than WebP — the 2x rendition drops from ~27 kB to
+    ~16 kB, and this asset sits above the fold on every page.
+
+    `fetchpriority="low"` matters more than it looks. Left at the default the
+    logo raced the hero photo for bandwidth and pushed the home page's LCP from
+    1.97 s to 2.42 s. It is eager so it still paints early, but it yields to the
+    image the score is actually measured on.
+  */}
+  <Picture
+    src={logo}
+    alt="Bordarte"
+    formats={['avif', 'webp']}
+    fallbackFormat="webp"
+    width={220}
+    densities={[1, 2]}
+    quality={68}
+    loading={priority ? 'eager' : 'lazy'}
+    decoding="async"
+    fetchpriority="low"
+    class:list={[size, 'w-auto transition-transform group-hover:scale-[1.02]']}
+  />
+  {
+    showTagline && (
+      <span class="text-[9px] font-medium tracking-[0.22em] text-on-primary-subtle uppercase">
+        Bordados que dejan huella
+      </span>
+    )
+  }
 </Tag>

@@ -3,16 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@11.3.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "LOCAL_PREVIEW=1 astro build && wrangler dev",
     "check": "astro check",
-    "deploy": "astro build && wrangler deploy",
+    "deploy": "wrangler deploy",
     "cf-typegen": "wrangler types",
     "test:smoke": "node scripts/smoke-test.mjs",
     "shots": "node scripts/shoot.mjs",
-    "shots:sections": "node scripts/shoot-sections.mjs"
+    "shots:sections": "node scripts/shoot-sections.mjs",
+    "deploy:local": "astro build && wrangler deploy"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
@@ -25,7 +27,6 @@
     "@astrojs/check": "^0.9.10",
     "@types/node": "^24",
     "puppeteer-core": "^25.7.0",
-    "subset-font": "^2.5.0",
     "typescript": "^5.7.3",
     "wrangler": "^4.123.0"
   }

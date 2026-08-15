@@ -9,7 +9,7 @@ const pathname = Astro.url.pathname.replace(/\/$/, '') || '/'
 
 <header class="sticky top-0 z-40 border-b border-primary-foreground/10 bg-primary text-primary-foreground">
   <div class="mx-auto flex h-20 max-w-6xl items-center justify-between px-5 md:px-8">
-    <Logo href={pathname === '/' ? null : '/'} />
+    <Logo href={pathname === '/' ? null : '/'} priority />
 
     <nav class="hidden items-center gap-8 lg:flex" aria-label="Navegación principal">
       {

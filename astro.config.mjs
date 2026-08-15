@@ -50,24 +50,6 @@ export default defineConfig({
       fallbacks: ['Georgia', 'serif'],
       display: 'swap',
     },
-    {
-      // Subset to the eight glyphs the logo wordmark needs: 18 kB -> 1.5 kB.
-      // Regenerate with `node scripts/subset-logo-font.mjs`.
-      provider: fontProviders.local(),
-      name: 'Yellowtail',
-      cssVariable: '--font-yellowtail',
-      fallbacks: ['cursive'],
-      display: 'swap',
-      options: {
-        variants: [
-          {
-            src: ['./src/assets/fonts/yellowtail-bordarte.woff2'],
-            weight: 400,
-            style: 'normal',
-          },
-        ],
-      },
-    },
   ],
 
   image: {

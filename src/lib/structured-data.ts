@@ -25,12 +25,17 @@ export function buildOrganizationGraph(): Record<string, unknown>[] {
       priceRange: siteConfig.priceRange,
       currenciesAccepted: 'UYU',
       paymentAccepted: 'Efectivo, transferencia bancaria',
-      image: absoluteUrl('/icon.svg'),
+      image: absoluteUrl('/logo-bordarte.jpg'),
       logo: {
         '@type': 'ImageObject',
         '@id': absoluteUrl('/#logo'),
-        url: absoluteUrl('/icon.svg'),
-        caption: siteConfig.name,
+        // The brand lockup is white artwork; this rendition has the navy
+        // background baked in so it stays visible wherever Google or a social
+        // card places it, instead of vanishing on a white surface.
+        url: absoluteUrl('/logo-bordarte.jpg'),
+        width: 1008,
+        height: 408,
+        caption: `${siteConfig.name} — ${siteConfig.tagline}`,
       },
       address: {
         '@type': 'PostalAddress',

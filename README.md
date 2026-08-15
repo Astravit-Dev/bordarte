@@ -105,14 +105,28 @@ interstitial). Ese build **no se despliega**.
   `@graph` único (LocalBusiness, WebSite, WebPage, Service, FAQPage,
   ImageGallery, BreadcrumbList).
 
-## Regenerar la fuente del logo
+## Logo
 
-La palabra "Bordarte" usa un subset de Yellowtail de 1,5 kB en vez de los 18 kB
-de la fuente completa. Si cambia el texto del logotipo:
+El logotipo es el lockup bordado real, no texto con una tipografía script.
+Vive en dos versiones:
 
-```bash
-node scripts/subset-logo-font.mjs
-```
+| Archivo | Para qué |
+| --- | --- |
+| `src/assets/brand/logo-bordarte.png` | Corazón + "Bordarte", fondo transparente. Header y footer. |
+| `public/logo-bordarte.jpg` | Lockup completo sobre el azul de marca. JSON-LD y redes. |
+
+Dos cosas a tener en cuenta:
+
+- **El arte es blanco**, así que solo funciona sobre el azul `--primary`. No hay
+  variante para fondo claro a propósito: una prop que renderice un logo
+  invisible es peor que no tener la opción. Si algún día hace falta, se necesita
+  arte nuevo, no un cambio de código.
+- **El subtítulo va como texto HTML**, no el que viene horneado en la imagen.
+  A tamaño de header ese texto mide unos 8 px y se empasta; como markup queda
+  nítido, seleccionable y traducible, y aporta al nombre accesible del enlace.
+
+El logo del header carga con `fetchpriority="low"`. Sin eso le compite el ancho
+de banda a la foto del hero y el LCP de la home pasa de 1,97 s a 2,42 s.
 
 ## Cloudflare
 
@@ -124,8 +138,17 @@ start, ni cómputo por request.
 - `public/_headers` cachea `/_astro/*` como inmutable y revalida el HTML.
 - `public/_redirects` mantiene vivas las URLs viejas del sitio en Next.js.
 
-## Migración
+## Despliegue en Cloudflare
 
-El sitio anterior en Next.js quedó en `.backup-nextjs/`. Una vez validado el
-despliegue, se puede borrar.
-# bordarte
+Con Workers Builds conectado al repo:
+
+- **Build command:** `pnpm run build`
+- **Deploy command:** `pnpm run deploy:ci` (es `wrangler deploy` a secas)
+
+Usá `deploy:ci`, no `deploy`: este último corre `astro build` de nuevo y hace
+que el CI compile dos veces.
+
+`packageManager` está fijado en `package.json` para que el CI use el mismo pnpm
+que escribió el lockfile. **No agregues un `pnpm-workspace.yaml`** salvo que
+esto pase a ser un monorepo de verdad: sin un campo `packages`, pnpm aborta el
+install con `packages field missing or empty`.
