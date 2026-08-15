@@ -143,12 +143,31 @@ start, ni cómputo por request.
 Con Workers Builds conectado al repo:
 
 - **Build command:** `pnpm run build`
-- **Deploy command:** `pnpm run deploy:ci` (es `wrangler deploy` a secas)
+- **Deploy command:** `pnpm run deploy`
 
-Usá `deploy:ci`, no `deploy`: este último corre `astro build` de nuevo y hace
-que el CI compile dos veces.
+`deploy` es `wrangler deploy` a secas, sin compilar: Workers Builds ya corrió
+el build command antes. Para desplegar desde una laptop está `deploy:local`,
+que sí compila primero.
 
-`packageManager` está fijado en `package.json` para que el CI use el mismo pnpm
-que escribió el lockfile. **No agregues un `pnpm-workspace.yaml`** salvo que
-esto pase a ser un monorepo de verdad: sin un campo `packages`, pnpm aborta el
-install con `packages field missing or empty`.
+### No agregues `pnpm-workspace.yaml` ni fijes `packageManager`
+
+Las dos cosas rompieron el build, y conviene saber por qué antes de
+reintroducirlas:
+
+- Un `pnpm-workspace.yaml` sin campo `packages` hace que pnpm 10 aborte el
+  install con `packages field missing or empty`. El archivo se había
+  autogenerado con valores placeholder y nunca llegó a hacer nada.
+- Fijar `packageManager` a pnpm 11 es peor: pnpm 11 corta el install con
+  `ERR_PNPM_IGNORED_BUILDS` porque esbuild y workerd traen postinstall sin
+  aprobar, y espera un `pnpm approve-builds` interactivo que en CI nunca
+  llega. En una máquina de desarrollo eso no se nota, porque la aprobación
+  queda guardada en el perfil del usuario y no en el repo.
+
+pnpm 10.11.1 —el que trae el entorno de Cloudflare— sólo avisa y sigue.
+Verificado en un clon limpio con esa versión exacta: `pnpm install
+--frozen-lockfile` y `pnpm run build` terminan ambos en 0.
+
+Si algún día hace falta que un paquete corra su postinstall, la única variante
+que funcionó fue `dangerouslyAllowAllBuilds: true` en `pnpm-workspace.yaml`
+(junto con `packages: ['.']`). El nombre no exagera: habilita scripts
+arbitrarios de cualquier dependencia.
