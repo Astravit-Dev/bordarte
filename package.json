@@ -1,0 +1,32 @@
+{
+  "name": "bordarte",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "LOCAL_PREVIEW=1 astro build && wrangler dev",
+    "check": "astro check",
+    "deploy": "astro build && wrangler deploy",
+    "cf-typegen": "wrangler types",
+    "test:smoke": "node scripts/smoke-test.mjs",
+    "shots": "node scripts/shoot.mjs",
+    "shots:sections": "node scripts/shoot-sections.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.2.2",
+    "sharp": "^0.35.3",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^24",
+    "puppeteer-core": "^25.7.0",
+    "subset-font": "^2.5.0",
+    "typescript": "^5.7.3",
+    "wrangler": "^4.123.0"
+  }
+}

@@ -1,0 +1,33 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PageHeader from '@/components/PageHeader.astro'
+import ContactForm from '@/components/contacto/ContactForm.astro'
+import ContactDetails from '@/components/contacto/ContactDetails.astro'
+import { webPage } from '@/lib/structured-data'
+
+const title = 'Contacto y presupuestos'
+const description =
+  'Contactá a Bordarte en Montevideo por WhatsApp, teléfono o Instagram para cotizar tu bordado personalizado en camperas, gorras, gorros y mochilas. Respuesta el mismo día.'
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path="/contacto"
+  jsonLd={[webPage({ path: '/contacto', name: title, description, type: 'ContactPage' })]}
+>
+  <PageHeader
+    eyebrow="Contacto"
+    title="Contanos qué querés bordar"
+    description="Completá el formulario o escribinos directamente por WhatsApp. Te respondemos con presupuesto y plazos a la brevedad."
+  />
+
+  <section class="py-16 md:py-24" aria-label="Formulario de contacto y datos del taller">
+    <div class="mx-auto grid max-w-5xl gap-12 px-5 md:grid-cols-2 md:gap-16 md:px-8">
+      <div class="rounded-sm border border-border bg-card p-6 md:p-8">
+        <ContactForm />
+      </div>
+      <ContactDetails />
+    </div>
+  </section>
+</BaseLayout>

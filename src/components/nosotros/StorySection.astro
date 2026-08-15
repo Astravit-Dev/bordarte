@@ -1,0 +1,47 @@
+---
+import CoverImage from '@/components/CoverImage.astro'
+import { IMAGES } from '@/lib/work-data'
+---
+
+<section class="bg-background" aria-labelledby="story-heading">
+  <div class="mx-auto grid max-w-6xl gap-12 px-5 py-16 md:px-8 md:py-24 lg:grid-cols-2 lg:items-center">
+    <CoverImage
+      class="rounded-sm lg:order-2"
+      src={IMAGES.gorrosDesoreja2}
+      alt="Decenas de gorros de lana bordados con el logo de Los Desoreja2 4x4, extendidos y listos para entregar"
+      ratio="aspect-[4/5]"
+      sizes="(min-width: 1024px) 560px, 90vw"
+      widths={[320, 480, 640, 828, 1120]}
+      position="object-center"
+      priority
+    />
+    <div class="lg:order-1">
+      <p class="eyebrow text-wood-text">Nuestra historia</p>
+      <h2
+        id="story-heading"
+        class="mt-4 text-balance font-serif text-3xl font-medium text-foreground md:text-4xl"
+      >
+        Un oficio que se aprende con las manos, punto por punto
+      </h2>
+      <div class="mt-6 flex flex-col gap-4 text-pretty leading-relaxed text-muted-foreground">
+        <p>
+          Bordarte nació en un taller chico de Montevideo, con una máquina, mucho hilo y la
+          idea simple de que un logo bien bordado dice más de una marca que cualquier cartel.
+          Empezamos bordando gorros para amigos y grupos de la zona, y de ahí no paramos.
+        </p>
+        <p>
+          Hoy trabajamos con talleres mecánicos, empresas, clubes deportivos y familias que
+          nos piden desde uniformes completos hasta una mochila con el nombre de un hijo.
+          Cambia el cliente, pero no cambia el cuidado: cada diseño se digitaliza a medida,
+          se prueba y se borda con la misma atención, sea un pedido de una unidad o de
+          doscientas.
+        </p>
+        <p>
+          Seguimos siendo un taller chico a propósito. Así podemos responder rápido, corregir
+          un detalle antes de producir en cantidad y entregar algo que realmente representa a
+          quien lo va a usar.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

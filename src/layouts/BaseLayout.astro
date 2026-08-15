@@ -1,0 +1,138 @@
+---
+import { Font } from 'astro:assets'
+import { getImage } from 'astro:assets'
+import SiteHeader from '@/components/SiteHeader.astro'
+import SiteFooter from '@/components/SiteFooter.astro'
+import WhatsappFloatButton from '@/components/WhatsappFloatButton.astro'
+import { siteConfig, absoluteUrl } from '@/lib/site-config'
+import { buildOrganizationGraph } from '@/lib/structured-data'
+import ogSource from '@/assets/images/gorras-calastretti.jpg'
+import '@/styles/global.css'
+
+interface Props {
+  title: string
+  description: string
+  /** Path only, e.g. "/servicios". Canonical + og:url are derived from it. */
+  path: string
+  noindex?: boolean
+  /** Extra JSON-LD nodes merged into the page's @graph. */
+  jsonLd?: Record<string, unknown>[]
+}
+
+const { title, description, path, noindex = false, jsonLd = [] } = Astro.props
+
+const canonical = absoluteUrl(path)
+const fullTitle = `${title} | ${siteConfig.name}`
+
+// A real 1200x630 social card, cropped and re-encoded at build time, instead of
+// the square logo the old site advertised as 1200x630.
+const ogImage = await getImage({
+  src: ogSource,
+  width: 1200,
+  height: 630,
+  fit: 'cover',
+  position: 'attention',
+  format: 'jpeg',
+  quality: 82,
+})
+
+const graph = [...buildOrganizationGraph(), ...jsonLd]
+---
+
+<!doctype html>
+<html lang="es-UY">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {
+      !noindex && (
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        />
+      )
+    }
+
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#1a2744" />
+    <meta name="color-scheme" content="light" />
+    <meta name="author" content={siteConfig.name} />
+
+    {/* Geographic signals for local search in Montevideo */}
+    <meta name="geo.region" content="UY-MO" />
+    <meta name="geo.placename" content={siteConfig.city} />
+    <meta name="geo.position" content={`${siteConfig.latitude};${siteConfig.longitude}`} />
+    <meta name="ICBM" content={`${siteConfig.latitude}, ${siteConfig.longitude}`} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteConfig.name} />
+    <meta property="og:locale" content="es_UY" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={absoluteUrl(ogImage.src)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${siteConfig.name} — ${siteConfig.tagline}`} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteUrl(ogImage.src)} />
+
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/icon-light-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" hreflang="es-uy" href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={canonical} />
+
+    {/*
+      Self-hosted, and deliberately NOT preloaded.
+
+      Astro emits size-adjusted fallback @font-face rules, but they hang off
+      `local("Times New Roman")`, which does not resolve on Linux or Android —
+      so on those platforms the metric correction never applies and the serif
+      swap moves the hero text a little (CLS ~0.04, comfortably inside the 0.1
+      "good" band).
+
+      Measured the alternative over three runs: preloading Fraunces cuts CLS to
+      0.010 but pushes LCP from 1.96 s to 2.88 s and the Performance score from
+      99 to 95, because ~24 kB of font jumps ahead of the hero image. Trading a
+      second of LCP for a shift nobody perceives is the wrong way round.
+    */}
+    <Font cssVariable="--font-inter" />
+    <Font cssVariable="--font-fraunces" />
+    <Font cssVariable="--font-yellowtail" />
+
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': graph })}
+    />
+  </head>
+
+  <body class="bg-background font-sans text-foreground">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-sm focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
+    >
+      Saltar al contenido principal
+    </a>
+
+    <SiteHeader />
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <SiteFooter />
+    <WhatsappFloatButton />
+  </body>
+</html>

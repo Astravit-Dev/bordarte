@@ -1,0 +1,191 @@
+---
+import { getImage } from 'astro:assets'
+import Icon from '@/components/icons/Icon.astro'
+import CoverImage from '@/components/CoverImage.astro'
+import { CATEGORIES, WORK_ITEMS } from '@/lib/work-data'
+
+// One larger rendition per piece, fetched only if someone opens the lightbox.
+const enlarged = await Promise.all(
+  WORK_ITEMS.map((item) =>
+    getImage({ src: item.image, width: 1100, format: 'webp', quality: 78 }),
+  ),
+)
+
+const items = WORK_ITEMS.map((item, index) => ({ ...item, full: enlarged[index]! }))
+
+const counts = CATEGORIES.map((category) => ({
+  ...category,
+  total: WORK_ITEMS.filter((item) => item.category === category.slug).length,
+}))
+
+const filterClass =
+  'gallery-filter rounded-full border border-primary bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors aria-[pressed=false]:border-border aria-[pressed=false]:bg-card aria-[pressed=false]:text-muted-foreground aria-[pressed=false]:hover:border-wood aria-[pressed=false]:hover:text-foreground'
+---
+
+<div>
+  {/*
+    A toggle-button group, not an ARIA tablist. The original markup declared
+    role="tablist"/role="tab" with no tabpanel, which is an invalid pattern that
+    pollutes the accessibility tree. aria-pressed describes exactly what these
+    controls do and needs no extra wiring.
+  */}
+  <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar trabajos por categoría">
+    <button type="button" class={filterClass} data-category="todos" aria-pressed="true">
+      Todos <span class="text-xs opacity-70">{WORK_ITEMS.length}</span>
+    </button>
+    {
+      counts.map((category) => (
+        <button type="button" class={filterClass} data-category={category.slug} aria-pressed="false">
+          {category.title} <span class="text-xs opacity-70">{category.total}</span>
+        </button>
+      ))
+    }
+  </div>
+
+  <p id="gallery-status" role="status" aria-live="polite" class="sr-only"></p>
+
+  {/*
+    Masonry columns rather than a fixed grid. These photos run from a 0.46 tall
+    jersey to a 1.86 strip of patches; a uniform square tile would crop the
+    subject out of half of them. Columns let every piece show at its own
+    proportions, and `break-inside` keeps a card from splitting across columns.
+
+    Every item ships in the HTML — filtering only toggles `hidden` — so a crawler
+    or an agent with no JavaScript still sees the complete gallery.
+  */}
+  <ul
+    id="gallery-grid"
+    class="mt-10 gap-3 [column-count:2] md:gap-4 md:[column-count:3] xl:[column-count:4]"
+  >
+    {
+      items.map((item, index) => (
+        <li data-category={item.category} class="mb-3 break-inside-avoid md:mb-4">
+          <button
+            type="button"
+            class="gallery-item group relative block w-full overflow-hidden rounded-sm bg-muted text-left"
+            data-full={item.full.src}
+            data-width={item.full.attributes?.width ?? item.image.width}
+            data-height={item.full.attributes?.height ?? item.image.height}
+            data-alt={item.imageAlt}
+            data-client={item.client}
+            data-product={item.product}
+            aria-label={`Ampliar: ${item.client} — ${item.product}`}
+          >
+            <CoverImage
+              src={item.image}
+              alt={item.imageAlt}
+              sizes="(min-width: 1280px) 300px, (min-width: 768px) 32vw, 45vw"
+              widths={[240, 320, 480, 680]}
+              priority={index < 2}
+              imgClass="transition-transform duration-500 group-hover:scale-[1.04]"
+            />
+            <span class="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-0.5 bg-gradient-to-t from-primary/95 via-primary/60 to-transparent p-3 pt-10 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 md:p-4 md:pt-12">
+              <span class="text-sm font-semibold text-primary-foreground">{item.client}</span>
+              <span class="text-xs text-on-primary-muted">{item.product}</span>
+            </span>
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p id="gallery-empty" hidden class="mt-10 text-center text-sm text-muted-foreground">
+    Todavía no tenemos fotos para esta categoría.
+  </p>
+
+  {/*
+    Native <dialog>: the browser supplies the modal role, the focus trap, Escape
+    to dismiss and inertness for the rest of the page — all things a hand-rolled
+    div modal has to fake, and usually gets wrong in the accessibility tree.
+  */}
+  <dialog
+    id="lightbox"
+    aria-labelledby="lightbox-client"
+    class="m-auto w-[min(46rem,94vw)] rounded-sm bg-card p-0 backdrop:bg-primary/90"
+  >
+    <div class="relative">
+      <form method="dialog">
+        <button
+          type="submit"
+          class="absolute top-3 right-3 z-10 flex size-10 items-center justify-center rounded-full bg-primary/70 text-primary-foreground transition-colors hover:bg-primary"
+          aria-label="Cerrar imagen ampliada"
+        >
+          <Icon name="x" class="size-5" />
+        </button>
+      </form>
+      <img
+        id="lightbox-image"
+        src=""
+        alt=""
+        width="1100"
+        height="1100"
+        decoding="async"
+        class="max-h-[78vh] w-full bg-muted object-contain"
+      />
+      <div class="border-t border-border p-4">
+        <p id="lightbox-client" class="text-sm font-semibold text-foreground"></p>
+        <p id="lightbox-product" class="text-sm text-muted-foreground"></p>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  const filters = document.querySelectorAll<HTMLButtonElement>('.gallery-filter')
+  const grid = document.getElementById('gallery-grid')
+  const empty = document.getElementById('gallery-empty')
+  const status = document.getElementById('gallery-status')
+
+  if (grid && empty && status) {
+    const entries = Array.from(grid.children) as HTMLElement[]
+
+    const applyFilter = (category: string) => {
+      let visible = 0
+
+      for (const entry of entries) {
+        const matches = category === 'todos' || entry.dataset.category === category
+        entry.hidden = !matches
+        if (matches) visible++
+      }
+
+      empty.hidden = visible > 0
+      status.textContent = visible === 1 ? '1 trabajo visible' : `${visible} trabajos visibles`
+    }
+
+    for (const filter of filters) {
+      filter.addEventListener('click', () => {
+        for (const other of filters) {
+          other.setAttribute('aria-pressed', String(other === filter))
+        }
+        applyFilter(filter.dataset.category ?? 'todos')
+      })
+    }
+  }
+
+  const lightbox = document.getElementById('lightbox') as HTMLDialogElement | null
+  const lightboxImage = document.getElementById('lightbox-image') as HTMLImageElement | null
+  const lightboxClient = document.getElementById('lightbox-client')
+  const lightboxProduct = document.getElementById('lightbox-product')
+
+  if (lightbox && lightboxImage && lightboxClient && lightboxProduct) {
+    for (const trigger of document.querySelectorAll<HTMLButtonElement>('.gallery-item')) {
+      trigger.addEventListener('click', () => {
+        // Carry the real dimensions across so the dialog reserves the right box
+        // instead of snapping from a square placeholder once the file lands.
+        lightboxImage.width = Number(trigger.dataset.width) || 1100
+        lightboxImage.height = Number(trigger.dataset.height) || 1100
+        lightboxImage.src = trigger.dataset.full ?? ''
+        lightboxImage.alt = trigger.dataset.alt ?? ''
+        lightboxClient.textContent = trigger.dataset.client ?? ''
+        lightboxProduct.textContent = trigger.dataset.product ?? ''
+        lightbox.showModal()
+      })
+    }
+
+    // Clicking the backdrop (the dialog element itself, outside its content box)
+    // dismisses it, matching the behaviour of the previous overlay.
+    lightbox.addEventListener('click', (event) => {
+      if (event.target === lightbox) lightbox.close()
+    })
+  }
+</script>

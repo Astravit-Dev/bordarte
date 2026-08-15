@@ -1,0 +1,66 @@
+---
+import Icon from '@/components/icons/Icon.astro'
+import CoverImage from '@/components/CoverImage.astro'
+import StitchDivider from '@/components/StitchDivider.astro'
+import { CATEGORIES, WORK_ITEMS } from '@/lib/work-data'
+
+const categories = CATEGORIES.map((category) => ({
+  ...category,
+  total: WORK_ITEMS.filter((item) => item.category === category.slug).length,
+}))
+---
+
+<section class="bg-muted" aria-labelledby="categories-heading">
+  <div class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+    <div class="max-w-2xl">
+      <p class="eyebrow text-wood-text">Qué bordamos</p>
+      <h2
+        id="categories-heading"
+        class="mt-4 text-balance font-serif text-3xl font-medium text-foreground md:text-4xl"
+      >
+        Un bordado para cada tipo de cliente
+      </h2>
+    </div>
+    <StitchDivider class="mt-8 max-w-24" />
+
+    <ul class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        categories.map((category, index) => (
+          <li>
+            <a
+              href={`/servicios#${category.slug}`}
+              class="group flex h-full flex-col overflow-hidden rounded-sm bg-card ring-1 ring-border transition-shadow hover:shadow-md"
+            >
+              <CoverImage
+                src={category.image}
+                alt={category.imageAlt}
+                ratio="aspect-[5/4]"
+                sizes="(min-width: 1024px) 370px, (min-width: 640px) 45vw, 90vw"
+                widths={[280, 400, 560, 740]}
+                position={category.imagePosition}
+                priority={index < 2}
+                imgClass="transition-transform duration-300 group-hover:scale-[1.03]"
+              />
+              <div class="flex flex-1 flex-col gap-2 p-6">
+                <div class="flex items-baseline justify-between gap-3">
+                  <h3 class="font-serif text-xl text-card-foreground">{category.title}</h3>
+                  <span class="shrink-0 text-xs text-subtle-foreground">
+                    {category.total} trabajos
+                  </span>
+                </div>
+                <p class="text-sm text-muted-foreground">{category.short}</p>
+                <span class="mt-auto flex items-center gap-1.5 pt-3 text-sm font-medium text-wood-text">
+                  Ver {category.title.toLowerCase()}
+                  <Icon
+                    name="arrow-right"
+                    class="size-3.5 transition-transform group-hover:translate-x-0.5"
+                  />
+                </span>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

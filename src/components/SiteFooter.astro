@@ -1,0 +1,83 @@
+---
+import Logo from '@/components/Logo.astro'
+import Icon from '@/components/icons/Icon.astro'
+import { NAV_LINKS, OPENING_HOURS, siteConfig, getWhatsappUrl } from '@/lib/site-config'
+
+const year = new Date().getFullYear()
+---
+
+<footer class="bg-primary text-primary-foreground">
+  <div class="mx-auto max-w-6xl px-5 py-14 md:px-8">
+    <div class="grid gap-10 md:grid-cols-[1.3fr_1fr_1fr]">
+      <div>
+        <Logo />
+        <p class="mt-5 max-w-sm text-sm leading-relaxed text-on-primary-muted">
+          Bordado computarizado sobre gorros, jockeys, camperas y uniformes. Trabajamos con
+          empresas, clubes y particulares en todo Uruguay.
+        </p>
+      </div>
+
+      <nav aria-labelledby="footer-nav-heading">
+        <h2 id="footer-nav-heading" class="eyebrow text-on-primary-subtle">Navegación</h2>
+        <ul class="mt-4 flex flex-col gap-2.5">
+          {
+            NAV_LINKS.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-sm text-on-primary-muted transition-colors hover:text-primary-foreground"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class="eyebrow text-on-primary-subtle">Contacto</h2>
+        <ul class="mt-4 flex flex-col gap-3">
+          <li>
+            <a
+              href={getWhatsappUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-2 text-sm text-on-primary-muted transition-colors hover:text-primary-foreground"
+            >
+              <Icon name="phone" class="size-4 shrink-0 text-wood-on-dark" />
+              <span>WhatsApp {siteConfig.phoneDisplay}</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href={siteConfig.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-2 text-sm text-on-primary-muted transition-colors hover:text-primary-foreground"
+            >
+              <Icon name="at-sign" class="size-4 shrink-0 text-wood-on-dark" />
+              <span>Instagram {siteConfig.instagramHandle}</span>
+            </a>
+          </li>
+          <li class="flex items-center gap-2 text-sm text-on-primary-muted">
+            <Icon name="map-pin" class="size-4 shrink-0 text-wood-on-dark" />
+            <span>{siteConfig.city}, {siteConfig.country}</span>
+          </li>
+          <li class="flex items-start gap-2 text-sm text-on-primary-muted">
+            <Icon name="clock" class="mt-0.5 size-4 shrink-0 text-wood-on-dark" />
+            <span>
+              {OPENING_HOURS.map((slot) => `${slot.label} ${slot.opens}–${slot.closes}`).join(' · ')}
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stitch-line-dark mt-10 opacity-60" role="presentation"></div>
+
+    <p class="mt-6 text-xs text-on-primary-subtle">
+      © {year} {siteConfig.name} — {siteConfig.tagline}. Todos los derechos reservados.
+    </p>
+  </div>
+</footer>

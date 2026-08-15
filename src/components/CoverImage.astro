@@ -1,0 +1,118 @@
+---
+import { Picture } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+
+/**
+ * An image cropped to a fixed aspect ratio.
+ *
+ * The wrapper reserves the box from the first paint, so the image can never
+ * shift layout — this is what keeps CLS at 0 for both the Lighthouse
+ * performance score and the agentic "stable layout" check.
+ *
+ * Every source is re-encoded to AVIF and WebP at build time and emitted at
+ * several widths, so a phone downloads a ~20 KB file instead of the 3 MB PNG.
+ */
+interface Props {
+  src: ImageMetadata
+  alt: string
+  /**
+   * Tailwind aspect-ratio class for the crop box. Omit it to render the photo
+   * at its own proportions — used by the gallery, where cropping a panoramic
+   * shot of a patch strip into a square would throw most of it away.
+   */
+  ratio?: string
+  /** `sizes` attribute — must describe the real rendered width. */
+  sizes: string
+  widths?: number[]
+  /** Tailwind object-position class when the subject is off-centre. */
+  position?: string
+  /** Set on the LCP image only: loads eagerly at high priority. */
+  priority?: boolean
+  /**
+   * Encoder quality. 58 is the floor at which these embroidery photos still
+   * hold thread detail in AVIF; going higher mostly buys bytes that land on the
+   * critical path for above-the-fold images.
+   */
+  quality?: number
+  class?: string
+  imgClass?: string
+}
+
+const {
+  src,
+  alt,
+  ratio,
+  sizes,
+  widths = [320, 480, 640, 828, 1120],
+  position,
+  priority = false,
+  quality = 58,
+  class: className,
+  imgClass,
+} = Astro.props
+
+/**
+ * Only the LCP image gets a dense ladder.
+ *
+ * Lighthouse's mobile profile is 412 CSS px at DPR 1.75, so a full-bleed image
+ * needs ~650 device px. On a coarse ladder the browser rounds up to 828w and
+ * over-downloads by ~30%. Densifying everywhere is a bad trade though: each
+ * extra width lands in two srcset attributes on every image, and doing it
+ * site-wide added 38 kB of markup to the services page to save 6 kB of pixels.
+ * So the midpoints are inserted only where a faster paint is worth the bytes.
+ */
+const ladder = priority
+  ? widths.flatMap((w, i) =>
+      i === widths.length - 1 ? [w] : [w, Math.round((w + widths[i + 1]!) / 2)],
+    )
+  : widths
+
+// Never ask sharp for an upscale: cap the ladder at the source width.
+const cappedWidths = [
+  ...new Set(
+    ladder.filter((w) => w <= src.width).concat(Math.min(src.width, Math.max(...ladder))),
+  ),
+].sort((a, b) => a - b)
+---
+
+{
+  ratio ? (
+    <div class:list={['relative overflow-hidden', ratio, className]}>
+      <Picture
+        src={src}
+        alt={alt}
+        formats={['avif', 'webp']}
+        fallbackFormat="webp"
+        widths={cappedWidths}
+        sizes={sizes}
+        quality={quality}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding={priority ? 'sync' : 'async'}
+        fetchpriority={priority ? 'high' : 'auto'}
+        class:list={[
+          'absolute inset-0 size-full object-cover',
+          position ?? 'object-center',
+          imgClass,
+        ]}
+      />
+    </div>
+  ) : (
+    /* Uncropped. The width/height Astro emits still reserves the box, so this
+       path costs no layout shift either. */
+    <div class:list={['overflow-hidden', className]}>
+      <Picture
+        src={src}
+        alt={alt}
+        formats={['avif', 'webp']}
+        fallbackFormat="webp"
+        widths={cappedWidths}
+        sizes={sizes}
+        quality={quality}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding={priority ? 'sync' : 'async'}
+        fetchpriority={priority ? 'high' : 'auto'}
+        class:list={['block h-auto w-full', imgClass]}
+      />
+    </div>
+  )
+}

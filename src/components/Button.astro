@@ -1,0 +1,60 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+/**
+ * Replaces the shadcn/base-ui Button. Renders a real <a> or <button> — no
+ * wrapper component, no client runtime, and an unambiguous role in the
+ * accessibility tree for both screen readers and browsing agents.
+ */
+type Variant = 'wood' | 'primary' | 'outline-on-dark'
+type Size = 'md' | 'lg'
+
+interface Props extends Omit<HTMLAttributes<'a'>, 'size'> {
+  href?: string
+  type?: 'button' | 'submit'
+  variant?: Variant
+  size?: Size
+  /** Adds target=_blank plus the matching rel. */
+  external?: boolean
+  class?: string
+}
+
+const {
+  href,
+  type = 'button',
+  variant = 'wood',
+  size = 'md',
+  external = false,
+  class: className,
+  ...rest
+} = Astro.props
+
+const base =
+  'inline-flex items-center justify-center gap-2 rounded-sm font-medium whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-60'
+
+const variants: Record<Variant, string> = {
+  wood: 'bg-wood-solid text-wood-foreground hover:bg-wood-solid-hover',
+  primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+  'outline-on-dark':
+    'border border-on-primary-subtle bg-transparent text-primary-foreground hover:bg-primary-foreground/10',
+}
+
+const sizes: Record<Size, string> = {
+  md: 'h-11 px-5 text-sm',
+  lg: 'h-12 px-6 text-base',
+}
+
+const classes = [base, variants[variant], sizes[size], className]
+const Tag = href ? 'a' : 'button'
+---
+
+<Tag
+  href={href}
+  type={href ? undefined : type}
+  target={href && external ? '_blank' : undefined}
+  rel={href && external ? 'noopener noreferrer' : undefined}
+  class:list={classes}
+  {...rest}
+>
+  <slot />
+</Tag>

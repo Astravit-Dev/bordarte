@@ -1,0 +1,91 @@
+---
+import Button from '@/components/Button.astro'
+import Icon from '@/components/icons/Icon.astro'
+import CoverImage from '@/components/CoverImage.astro'
+import { getWhatsappUrl } from '@/lib/site-config'
+import { IMAGES } from '@/lib/work-data'
+
+const FACTS = [
+  { term: 'Rubro', value: 'Empresas y clubes' },
+  { term: 'Técnica', value: 'Bordado computarizado' },
+  { term: 'Alcance', value: 'Todo Uruguay' },
+]
+---
+
+<section
+  class="relative overflow-hidden bg-primary text-primary-foreground"
+  aria-labelledby="hero-heading"
+>
+  <div
+    class="mx-auto grid max-w-6xl gap-10 px-5 py-16 md:px-8 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16 lg:py-24"
+  >
+    <div>
+      <p class="eyebrow text-wood-on-dark">Taller de bordado · Montevideo, Uruguay</p>
+      <h1
+        id="hero-heading"
+        class="mt-5 text-balance font-serif text-4xl leading-[1.1] font-medium md:text-5xl lg:text-6xl"
+      >
+        Bordado profesional que representa tu marca, tu club o tu equipo.
+      </h1>
+      <p class="mt-6 max-w-lg text-pretty text-base leading-relaxed text-on-primary-muted md:text-lg">
+        Hilo a hilo, cada punto está pensado para durar. Bordamos uniformes de empresa,
+        delantales de parrilla, camisetas de club, parches institucionales, gorros y mochilas
+        para todo el país.
+      </p>
+
+      <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+        <Button href={getWhatsappUrl()} external variant="wood" size="lg">
+          <Icon name="message-circle" class="size-4" />
+          Cotizar por WhatsApp
+        </Button>
+        <Button href="/galeria" variant="outline-on-dark" size="lg">
+          Ver trabajos reales
+          <Icon name="arrow-right" class="size-4" />
+        </Button>
+      </div>
+
+      {/*
+        One column on phones, three from `sm` up.
+
+        In three narrow columns "Bordado computarizado" wrapped onto a different
+        number of lines under the metric-adjusted fallback than under Fraunces,
+        so the block changed height when the webfont arrived and pushed the
+        photo below it — the single largest layout shift on the page. Given the
+        full width, each value sits on one line in either font and the swap
+        moves nothing.
+      */}
+      <dl class="mt-12 grid grid-cols-1 gap-4 border-t border-primary-foreground/15 pt-8 sm:grid-cols-3 sm:gap-6">
+        {
+          FACTS.map((fact) => (
+            <div>
+              <dt class="text-xs tracking-wide text-on-primary-subtle uppercase">{fact.term}</dt>
+              <dd class="mt-1 font-serif text-lg">{fact.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    {/*
+      One strong photo instead of the old three-up collage: this is the actual
+      workshop — the Bordarte sign, the embroidery head and the thread cones are
+      all in frame behind a finished piece. It carries more credibility than a
+      grid of cropped product shots, and it is the page's LCP element.
+    */}
+    <figure class="lg:justify-self-end">
+      <CoverImage
+        class="rounded-sm shadow-xl shadow-black/25"
+        src={IMAGES.tallerBordarte}
+        alt="Delantal de jean bordado con el texto “Economista Mauri 2026”, en el taller de Bordarte junto a la máquina bordadora y los conos de hilo"
+        ratio="aspect-[4/5]"
+        sizes="(min-width: 1024px) 480px, (min-width: 640px) 70vw, 90vw"
+        widths={[320, 480, 640, 828, 960]}
+        position="object-[50%_35%]"
+        priority
+      />
+      <figcaption class="mt-3 text-xs text-on-primary-subtle">
+        Nuestro taller en Montevideo — bordado y control pieza por pieza.
+      </figcaption>
+    </figure>
+  </div>
+</section>

@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bordarte",
+  "compatibility_date": "2026-08-14",
+
+  // Static output means there is no Worker script: Cloudflare serves the built
+  // files straight from the edge asset store, so there is no cold start and no
+  // per-request compute to pay for.
+  "assets": {
+    "directory": "./dist",
+
+    // Pages are emitted as `servicios.html`; serve them at `/servicios` and
+    // 308 any `/servicios/` request to the canonical no-slash URL. This keeps a
+    // single indexable URL per page and matches `trailingSlash: 'never'`.
+    "html_handling": "drop-trailing-slash",
+
+    // Unknown paths render the prerendered 404 page with a real 404 status,
+    // instead of a soft-200 that would get indexed.
+    "not_found_handling": "404-page"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}

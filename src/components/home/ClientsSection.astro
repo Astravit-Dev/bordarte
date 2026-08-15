@@ -1,0 +1,20 @@
+---
+import { CLIENTS } from '@/lib/work-data'
+---
+
+<section class="border-y border-border bg-muted" aria-labelledby="clients-heading">
+  <div class="mx-auto max-w-6xl px-5 py-12 md:px-8">
+    <h2 id="clients-heading" class="eyebrow text-center text-muted-foreground">
+      Clientes que ya llevan su marca bordada
+    </h2>
+    <ul class="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+      {
+        CLIENTS.map((client) => (
+          <li class="font-serif text-lg text-subtle-foreground transition-colors hover:text-foreground">
+            {client}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

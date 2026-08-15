@@ -1,0 +1,125 @@
+---
+import Button from '@/components/Button.astro'
+import Icon from '@/components/icons/Icon.astro'
+import { siteConfig } from '@/lib/site-config'
+
+const fieldClass =
+  'w-full rounded-sm border border-input bg-card px-3 text-base text-foreground placeholder:text-subtle-foreground focus-visible:border-ring'
+---
+
+{/*
+  WebMCP declarative annotations (`toolname`, `tooldescription`,
+  `toolparamdescription`) expose this form to browsing agents as a typed tool
+  with a JSON Schema, so an agent can request a quote without guessing what the
+  fields mean. `toolautosubmit` is deliberately omitted: the agent fills the
+  form, a human still presses send.
+
+  The form also degrades: with JavaScript off it GETs straight to wa.me with the
+  message body, so the primary action never depends on a script.
+*/}
+<form
+  id="quote-form"
+  method="get"
+  action={`https://wa.me/${siteConfig.whatsappNumber}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="space-y-5"
+  data-whatsapp={siteConfig.whatsappNumber}
+  toolname="solicitarCotizacionBordado"
+  tooldescription="Solicita una cotización de bordado personalizado a Bordarte (Montevideo, Uruguay). Recopila el nombre del cliente, la prenda o producto a bordar y los detalles del pedido, y abre WhatsApp con el mensaje redactado."
+  aria-labelledby="quote-form-heading"
+>
+  <h2 id="quote-form-heading" class="font-serif text-2xl font-semibold text-foreground">
+    Pedí tu cotización
+  </h2>
+
+  <div class="space-y-2">
+    <label for="quote-name" class="block text-sm font-medium text-foreground">Tu nombre</label>
+    <input
+      id="quote-name"
+      name="nombre"
+      type="text"
+      required
+      autocomplete="name"
+      placeholder="¿Cómo te llamás?"
+      class:list={[fieldClass, 'h-11']}
+      toolparamdescription="Nombre completo de la persona o empresa que solicita la cotización."
+    />
+  </div>
+
+  <div class="space-y-2">
+    <label for="quote-product" class="block text-sm font-medium text-foreground">
+      Prenda o producto
+    </label>
+    <input
+      id="quote-product"
+      name="producto"
+      type="text"
+      required
+      list="quote-product-options"
+      placeholder="Ej: campera softshell, gorra, mochila…"
+      class:list={[fieldClass, 'h-11']}
+      toolparamdescription="Prenda o producto a bordar. Por ejemplo: campera softshell, gorra, gorro de lana, remera, buzo, mochila o uniforme."
+    />
+    <datalist id="quote-product-options">
+      <option value="Campera softshell"></option>
+      <option value="Gorra o jockey"></option>
+      <option value="Gorro de lana"></option>
+      <option value="Remera o buzo"></option>
+      <option value="Mochila o bolso"></option>
+      <option value="Uniforme corporativo"></option>
+    </datalist>
+  </div>
+
+  <div class="space-y-2">
+    <label for="quote-details" class="block text-sm font-medium text-foreground">
+      Contanos los detalles
+    </label>
+    <textarea
+      id="quote-details"
+      name="text"
+      required
+      rows="5"
+      placeholder="Cantidad de unidades, colores, si tenés el logo listo, fecha en la que lo necesitás…"
+      class:list={[fieldClass, 'py-2.5']}
+      toolparamdescription="Detalles del pedido: cantidad de unidades, colores, si el logo ya está disponible y fecha de entrega deseada."></textarea>
+  </div>
+
+  <Button type="submit" variant="wood" size="lg" class="w-full">
+    <Icon name="message-circle" class="size-4" />
+    Enviar por WhatsApp
+  </Button>
+
+  <p class="text-center text-xs text-muted-foreground">
+    Al enviar se abre WhatsApp con tu mensaje ya escrito, listo para mandar.
+  </p>
+</form>
+
+<script>
+  const form = document.getElementById('quote-form') as HTMLFormElement | null
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault()
+
+    const whatsappNumber = form.dataset.whatsapp ?? ''
+    const data = new FormData(form)
+    const name = String(data.get('nombre') ?? '').trim()
+    const product = String(data.get('producto') ?? '').trim()
+    const details = String(data.get('text') ?? '').trim()
+
+    const message = [
+      'Hola Bordarte! Quiero pedir una cotización.',
+      name && `Nombre: ${name}`,
+      product && `Prenda o producto: ${product}`,
+      details && `Detalles: ${details}`,
+    ]
+      .filter(Boolean)
+      .join('\n')
+
+    window.open(
+      `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
+      '_blank',
+      'noopener,noreferrer',
+    )
+  })
+</script>

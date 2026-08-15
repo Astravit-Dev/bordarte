@@ -1,0 +1,48 @@
+---
+import Icon from '@/components/icons/Icon.astro'
+import type { IconName } from '@/components/icons/Icon.astro'
+
+const VALUE_PROPS: { icon: IconName; title: string; description: string }[] = [
+  {
+    icon: 'cpu',
+    title: 'Bordado computarizado',
+    description:
+      'Máquinas de precisión que reproducen tu logo con detalle, sin perder definición en textos chicos.',
+  },
+  {
+    icon: 'shield-check',
+    title: 'Durabilidad real',
+    description:
+      'El bordado no se cuartea ni se descolora como el estampado. Aguanta lavados, sol y uso diario.',
+  },
+  {
+    icon: 'users',
+    title: 'Atención personalizada',
+    description:
+      'Te acompañamos desde el diseño del logo hasta la entrega, sin pedidos mínimos que no puedas cumplir.',
+  },
+  {
+    icon: 'truck',
+    title: 'Entrega en todo el país',
+    description:
+      'Coordinamos envíos a cualquier departamento de Uruguay para empresas, clubes y particulares.',
+  },
+]
+---
+
+<section class="border-b border-border bg-background" aria-labelledby="value-props-heading">
+  <div class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+    <h2 id="value-props-heading" class="sr-only">Por qué elegir Bordarte</h2>
+    <ul class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+      {
+        VALUE_PROPS.map((item) => (
+          <li class="flex flex-col gap-3">
+            <Icon name={item.icon} class="size-7 text-wood-text" strokeWidth={1.75} />
+            <h3 class="font-serif text-lg leading-snug text-foreground">{item.title}</h3>
+            <p class="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

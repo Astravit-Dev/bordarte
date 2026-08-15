@@ -1,0 +1,40 @@
+---
+import Icon from '@/components/icons/Icon.astro'
+import { FAQS } from '@/lib/services-data'
+---
+
+{/*
+  Native <details>/<summary> accordion: no JavaScript, and every answer is
+  present in the served HTML. Crawlers and browsing agents read the full text
+  without expanding anything, which is exactly what the FAQPage rich result and
+  the agentic content checks need.
+*/}
+<section id="faq" class="scroll-mt-28 border-t border-border bg-secondary py-20 md:py-28" aria-labelledby="faq-heading">
+  <div class="mx-auto max-w-3xl px-5 md:px-8">
+    <div class="text-center">
+      <p class="eyebrow text-wood-text">Preguntas frecuentes</p>
+      <h2 id="faq-heading" class="mt-3 text-balance font-serif text-3xl font-medium text-foreground md:text-4xl">
+        Todo lo que necesitás saber
+      </h2>
+    </div>
+
+    <div class="mt-10 divide-y divide-border border-y border-border">
+      {
+        FAQS.map((faq) => (
+          <details name="faq" class="group py-1">
+            <summary
+              class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-left text-base font-medium text-foreground marker:content-none [&::-webkit-details-marker]:hidden"
+            >
+              <h3 class="text-base font-medium">{faq.question}</h3>
+              <Icon
+                name="arrow-right"
+                class="size-4 shrink-0 rotate-90 text-wood-text transition-transform group-open:-rotate-90"
+              />
+            </summary>
+            <p class="pb-5 text-pretty leading-relaxed text-muted-foreground">{faq.answer}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

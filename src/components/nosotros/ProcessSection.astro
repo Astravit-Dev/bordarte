@@ -1,0 +1,67 @@
+---
+import Icon from '@/components/icons/Icon.astro'
+import type { IconName } from '@/components/icons/Icon.astro'
+
+const STEPS: { icon: IconName; title: string; description: string }[] = [
+  {
+    icon: 'clipboard-list',
+    title: 'Consulta y diseño',
+    description:
+      'Nos contás tu idea, logo o marca. Te asesoramos sobre la prenda, el hilo y la técnica ideal para el resultado que buscás.',
+  },
+  {
+    icon: 'palette',
+    title: 'Digitalización del bordado',
+    description:
+      'Convertimos tu logo en un archivo de puntadas a medida, cuidando cada detalle de tipografía, color y proporción.',
+  },
+  {
+    icon: 'sparkles',
+    title: 'Bordado a máquina',
+    description:
+      'Bordamos con máquinas industriales de alta precisión, sobre la prenda que elijas: buzos, camperas, gorras o mochilas.',
+  },
+  {
+    icon: 'package',
+    title: 'Control y entrega',
+    description:
+      'Revisamos cada pieza una por una antes de entregarla. Coordinamos el retiro o envío según lo que necesites.',
+  },
+]
+---
+
+<section class="border-t border-border bg-secondary py-20 md:py-28" aria-labelledby="process-heading">
+  <div class="mx-auto max-w-6xl px-5 md:px-8">
+    <div class="max-w-2xl">
+      <p class="eyebrow text-wood-text">Cómo trabajamos</p>
+      <h2
+        id="process-heading"
+        class="mt-3 text-balance font-serif text-3xl font-medium text-foreground md:text-4xl"
+      >
+        Del logo a la prenda terminada
+      </h2>
+    </div>
+
+    <ol class="mt-14 grid gap-10 md:grid-cols-4 md:gap-6">
+      {
+        STEPS.map((step, index) => (
+          <li class="relative">
+            {index < STEPS.length - 1 && (
+              <div class="stitch-line absolute top-6 left-full hidden w-6 md:block" role="presentation" />
+            )}
+            <div class="flex items-center gap-3">
+              <span class="flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-wood bg-card">
+                <Icon name={step.icon} class="size-5 text-wood-text" />
+              </span>
+              <span class="font-serif text-2xl font-semibold text-subtle-foreground">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+            </div>
+            <h3 class="mt-4 text-base font-semibold text-foreground">{step.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{step.description}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

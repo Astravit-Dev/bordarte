@@ -1,0 +1,76 @@
+---
+import Icon from '@/components/icons/Icon.astro'
+
+const COMPARISON = [
+  {
+    aspect: 'Durabilidad',
+    bordado: 'El hilo queda integrado a la tela. Resiste años de lavado sin perder forma ni color.',
+    estampado: 'Se agrieta, se pela y pierde color después de varios lavados.',
+  },
+  {
+    aspect: 'Terminación',
+    bordado: 'Textura y relieve que se ven y se sienten como un trabajo profesional.',
+    estampado: 'Queda plano sobre la tela, se nota como una impresión.',
+  },
+  {
+    aspect: 'Prendas oscuras',
+    bordado: 'El hilo mantiene el color exacto sin importar la base.',
+    estampado: 'Suele necesitar más capas y pierde nitidez en telas negras o azul marino.',
+  },
+]
+---
+
+<section class="bg-muted" aria-labelledby="why-choose-heading">
+  <div class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+    <div class="max-w-2xl">
+      <p class="eyebrow text-wood-text">Por qué bordado</p>
+      <h2
+        id="why-choose-heading"
+        class="mt-4 text-balance font-serif text-3xl font-medium text-foreground md:text-4xl"
+      >
+        Bordado vs. estampado: la diferencia se nota al segundo lavado
+      </h2>
+    </div>
+
+    {/* A real table: agents and screen readers get row/column relationships
+         for free, instead of having to infer them from a CSS grid. */}
+    <div class="mt-10 overflow-x-auto rounded-sm ring-1 ring-border">
+      <table class="w-full min-w-[36rem] border-collapse text-left">
+        <caption class="sr-only">
+          Comparación entre bordado y estampado según durabilidad, terminación y comportamiento en
+          prendas oscuras
+        </caption>
+        <thead>
+          <tr class="bg-primary text-primary-foreground">
+            <th scope="col" class="p-5 text-sm font-semibold">Aspecto</th>
+            <th scope="col" class="p-5 text-sm font-semibold">Bordado Bordarte</th>
+            <th scope="col" class="p-5 text-sm font-semibold text-on-primary-muted">Estampado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            COMPARISON.map((row, i) => (
+              <tr class:list={[i % 2 === 0 ? 'bg-card' : 'bg-background', i > 0 && 'border-t border-border']}>
+                <th scope="row" class="p-5 align-top text-sm font-semibold text-foreground">
+                  {row.aspect}
+                </th>
+                <td class="p-5 align-top text-sm text-muted-foreground">
+                  <span class="flex gap-2">
+                    <Icon name="check" class="mt-0.5 size-4 shrink-0 text-wood-text" />
+                    <span>{row.bordado}</span>
+                  </span>
+                </td>
+                <td class="p-5 align-top text-sm text-subtle-foreground">
+                  <span class="flex gap-2">
+                    <Icon name="x" class="mt-0.5 size-4 shrink-0 text-subtle-foreground" />
+                    <span>{row.estampado}</span>
+                  </span>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

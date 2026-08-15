@@ -1,0 +1,14 @@
+---
+import Icon from '@/components/icons/Icon.astro'
+import { getWhatsappUrl } from '@/lib/site-config'
+---
+
+<a
+  href={getWhatsappUrl()}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="fixed right-5 bottom-5 z-50 flex size-14 items-center justify-center rounded-full bg-[#128C4A] text-white shadow-lg shadow-black/25 transition-transform hover:scale-105 md:right-7 md:bottom-7"
+  aria-label="Escribinos por WhatsApp"
+>
+  <Icon name="whatsapp" class="size-7" />
+</a>

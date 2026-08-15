@@ -1,0 +1,47 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PageHeader from '@/components/PageHeader.astro'
+import ServiceCard from '@/components/servicios/ServiceCard.astro'
+import FaqSection from '@/components/servicios/FaqSection.astro'
+import CtaSection from '@/components/CtaSection.astro'
+import StitchDivider from '@/components/StitchDivider.astro'
+import { SERVICES } from '@/lib/services-data'
+import { webPage, serviceNodes, faqNode } from '@/lib/structured-data'
+
+const title = 'Servicios de bordado computarizado'
+const description =
+  'Bordado personalizado en camperas softshell, gorras, gorros de lana, remeras, mochilas y uniformes corporativos. Digitalización de logos y pedidos mayoristas en Montevideo, Uruguay.'
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path="/servicios"
+  jsonLd={[
+    webPage({ path: '/servicios', name: title, description, type: 'CollectionPage' }),
+    ...serviceNodes(),
+    faqNode(),
+  ]}
+>
+  <PageHeader
+    eyebrow="Nuestros servicios"
+    title="Bordamos cualquier prenda, para cualquier propósito"
+    description="Desde una campera individual hasta un pedido institucional de cien gorras: cada trabajo recibe el mismo cuidado y precisión."
+  />
+
+  <section class="py-16 md:py-24" aria-label="Listado de servicios de bordado">
+    <div class="mx-auto max-w-6xl space-y-20 px-5 md:space-y-28 md:px-8">
+      {
+        SERVICES.map((service, index) => (
+          <div>
+            <ServiceCard service={service} reversed={index % 2 === 1} priority={index === 0} />
+            {index < SERVICES.length - 1 && <StitchDivider class="mt-20 md:mt-28" />}
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <FaqSection />
+  <CtaSection />
+</BaseLayout>

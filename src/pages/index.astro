@@ -1,0 +1,28 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import HeroSection from '@/components/home/HeroSection.astro'
+import ValuePropsSection from '@/components/home/ValuePropsSection.astro'
+import CategoriesPreviewSection from '@/components/home/CategoriesPreviewSection.astro'
+import GalleryHighlightSection from '@/components/home/GalleryHighlightSection.astro'
+import ClientsSection from '@/components/home/ClientsSection.astro'
+import CtaSection from '@/components/CtaSection.astro'
+import { webPage } from '@/lib/structured-data'
+
+const title = 'Bordados personalizados en Montevideo, Uruguay'
+const description =
+  'Taller de bordado computarizado en Montevideo. Bordamos gorros de lana, jockeys, camperas softshell corporativas, mochilas y uniformes para empresas, clubes y particulares de todo Uruguay.'
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path="/"
+  jsonLd={[webPage({ path: '/', name: title, description })]}
+>
+  <HeroSection />
+  <ValuePropsSection />
+  <CategoriesPreviewSection />
+  <GalleryHighlightSection />
+  <ClientsSection />
+  <CtaSection />
+</BaseLayout>

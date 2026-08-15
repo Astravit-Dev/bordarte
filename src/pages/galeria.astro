@@ -1,0 +1,57 @@
+---
+import { getImage } from 'astro:assets'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PageHeader from '@/components/PageHeader.astro'
+import GalleryGrid from '@/components/galeria/GalleryGrid.astro'
+import ClientsSection from '@/components/home/ClientsSection.astro'
+import CtaSection from '@/components/CtaSection.astro'
+import { WORK_ITEMS } from '@/lib/work-data'
+import { absoluteUrl } from '@/lib/site-config'
+import { webPage, imageGalleryNode } from '@/lib/structured-data'
+
+const title = 'Galería de trabajos de bordado'
+const description =
+  'Mirá nuestros trabajos de bordado computarizado: camperas corporativas, gorras, gorros de lana, escudos de clubes y mochilas personalizadas bordadas en Montevideo.'
+
+// Absolute URLs for the ImageObject nodes, so Google Images can index the
+// same renditions the page actually serves.
+const galleryMedia = await Promise.all(
+  WORK_ITEMS.map(async (item) => {
+    const rendered = await getImage({ src: item.image, width: 900, format: 'webp', quality: 78 })
+    return {
+      name: `${item.client} — ${item.product}`,
+      description: item.imageAlt,
+      url: absoluteUrl(rendered.src),
+    }
+  }),
+)
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path="/galeria"
+  jsonLd={[
+    webPage({ path: '/galeria', name: title, description, type: 'CollectionPage' }),
+    imageGalleryNode(galleryMedia),
+  ]}
+>
+  <PageHeader
+    eyebrow="Trabajos realizados"
+    title="Cada bordado cuenta una historia"
+    description="Empresas, clubes, talleres y familias que confiaron en nosotros para llevar su marca puesta. Filtrá por categoría para ver más ejemplos."
+  />
+
+  <section class="py-16 md:py-20" aria-label="Galería de trabajos">
+    <div class="mx-auto max-w-6xl px-5 md:px-8">
+      <GalleryGrid />
+    </div>
+  </section>
+
+  <ClientsSection />
+  <CtaSection
+    title="¿Querés ver tu marca bordada?"
+    description="Mandanos tu logo por WhatsApp y te mostramos cómo quedaría antes de bordar."
+    whatsappMessage="Hola Bordarte! Vi la galería y quiero ver cómo quedaría mi logo bordado."
+  />
+</BaseLayout>

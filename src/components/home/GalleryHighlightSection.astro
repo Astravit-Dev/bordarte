@@ -1,0 +1,67 @@
+---
+import Icon from '@/components/icons/Icon.astro'
+import CoverImage from '@/components/CoverImage.astro'
+import StitchDivider from '@/components/StitchDivider.astro'
+import { FEATURED_WORKS, shapeOf } from '@/lib/work-data'
+
+/**
+ * The home page shows a tidy portrait grid, so it only draws from pieces that
+ * are already portrait or square. Landscape shots — the strip of referee
+ * patches, the stack of folded tees — lose their subject entirely in a 4:5
+ * crop; they get shown uncropped in the gallery's masonry instead.
+ */
+const items = FEATURED_WORKS.filter((item) => shapeOf(item.image) !== 'wide').slice(0, 9)
+---
+
+<section class="bg-background" aria-labelledby="gallery-highlight-heading">
+  <div class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+    <div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+      <div class="max-w-xl">
+        <p class="eyebrow text-wood-text">Trabajos reales</p>
+        <h2
+          id="gallery-highlight-heading"
+          class="mt-4 text-balance font-serif text-3xl font-medium text-foreground md:text-4xl"
+        >
+          Cada punto, un cliente que confió en nosotros
+        </h2>
+      </div>
+      <a
+        href="/galeria"
+        class="flex shrink-0 items-center gap-1.5 text-sm font-medium text-wood-text transition-colors hover:text-foreground"
+      >
+        Ver toda la galería
+        <Icon name="arrow-right" class="size-3.5" />
+      </a>
+    </div>
+    <StitchDivider class="mt-8 max-w-24" />
+
+    {/*
+      Portrait tiles, because almost every piece here is photographed vertically
+      — a garment on a mannequin or a patch on a jacket. Squares would cut the
+      subject in half.
+    */}
+    <ul class="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
+      {
+        items.map((item) => (
+          <li class="group relative overflow-hidden rounded-sm">
+            <CoverImage
+              src={item.image}
+              alt={item.imageAlt}
+              ratio="aspect-[4/5]"
+              sizes="(min-width: 768px) 320px, 45vw"
+              widths={[240, 320, 480, 640]}
+              position={item.imagePosition}
+              imgClass="transition-transform duration-300 group-hover:scale-[1.04]"
+            />
+            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-primary/95 via-primary/50 to-transparent p-3 pt-10">
+              <p class="text-xs font-semibold tracking-wide text-primary-foreground">
+                {item.client}
+              </p>
+              <p class="text-[11px] text-on-primary-muted">{item.product}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

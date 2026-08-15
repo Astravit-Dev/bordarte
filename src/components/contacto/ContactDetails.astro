@@ -1,0 +1,91 @@
+---
+import Icon from '@/components/icons/Icon.astro'
+import { siteConfig, getWhatsappUrl, OPENING_HOURS } from '@/lib/site-config'
+---
+
+<div class="space-y-8">
+  <div>
+    <h2 class="font-serif text-2xl font-semibold text-foreground">Hablemos por WhatsApp</h2>
+    <p class="mt-2 text-pretty leading-relaxed text-muted-foreground">
+      Es la vía más rápida para mandarnos tu logo, preguntar precios y coordinar la entrega.
+      Respondemos durante el horario de taller.
+    </p>
+  </div>
+
+  <ul class="space-y-5">
+    <li class="flex items-start gap-3">
+      <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-wood/15 text-wood-text">
+        <Icon name="message-circle" class="size-5" />
+      </span>
+      <div>
+        <p class="text-sm font-semibold text-foreground">WhatsApp</p>
+        <a
+          href={getWhatsappUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-sm text-muted-foreground underline underline-offset-2 hover:text-wood-text"
+        >
+          {siteConfig.phoneDisplay}
+        </a>
+      </div>
+    </li>
+
+    <li class="flex items-start gap-3">
+      <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-wood/15 text-wood-text">
+        <Icon name="phone" class="size-5" />
+      </span>
+      <div>
+        <p class="text-sm font-semibold text-foreground">Teléfono</p>
+        <a
+          href={`tel:${siteConfig.phoneE164}`}
+          class="text-sm text-muted-foreground underline underline-offset-2 hover:text-wood-text"
+        >
+          {siteConfig.phoneDisplay}
+        </a>
+      </div>
+    </li>
+
+    <li class="flex items-start gap-3">
+      <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-wood/15 text-wood-text">
+        <Icon name="at-sign" class="size-5" />
+      </span>
+      <div>
+        <p class="text-sm font-semibold text-foreground">Instagram</p>
+        <a
+          href={siteConfig.instagramUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-sm text-muted-foreground underline underline-offset-2 hover:text-wood-text"
+        >
+          {siteConfig.instagramHandle}
+        </a>
+      </div>
+    </li>
+
+    <li class="flex items-start gap-3">
+      <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-wood/15 text-wood-text">
+        <Icon name="map-pin" class="size-5" />
+      </span>
+      <div>
+        <p class="text-sm font-semibold text-foreground">Ubicación</p>
+        <p class="text-sm text-muted-foreground">{siteConfig.city}, {siteConfig.country}</p>
+      </div>
+    </li>
+
+    <li class="flex items-start gap-3">
+      <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-wood/15 text-wood-text">
+        <Icon name="clock" class="size-5" />
+      </span>
+      <div>
+        <p class="text-sm font-semibold text-foreground">Horario de atención</p>
+        {
+          OPENING_HOURS.map((slot) => (
+            <p class="text-sm text-muted-foreground">
+              {slot.label}, {slot.opens} a {slot.closes}
+            </p>
+          ))
+        }
+      </div>
+    </li>
+  </ul>
+</div>

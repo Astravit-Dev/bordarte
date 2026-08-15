@@ -1,0 +1,33 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PageHeader from '@/components/PageHeader.astro'
+import StorySection from '@/components/nosotros/StorySection.astro'
+import ProcessSection from '@/components/nosotros/ProcessSection.astro'
+import WhyChooseSection from '@/components/nosotros/WhyChooseSection.astro'
+import CtaSection from '@/components/CtaSection.astro'
+import { webPage } from '@/lib/structured-data'
+
+const title = 'Nosotros: el taller de bordado'
+const description =
+  'Conocé la historia de Bordarte, taller de bordado computarizado en Montevideo. Precisión, calidad y atención personalizada en cada prenda, desde una unidad hasta pedidos institucionales.'
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path="/nosotros"
+  jsonLd={[webPage({ path: '/nosotros', name: title, description, type: 'AboutPage' })]}
+>
+  <PageHeader
+    eyebrow="Nuestra historia"
+    title="Bordados que dejan huella"
+    description="Somos un taller de bordado computarizado en Montevideo. Trabajamos con clubes, empresas, talleres y familias que quieren llevar su marca con orgullo, puntada a puntada."
+  />
+  <StorySection />
+  <ProcessSection />
+  <WhyChooseSection />
+  <CtaSection
+    title="¿Tenés un proyecto en mente?"
+    description="Contanos qué necesitás bordar y te asesoramos sin compromiso."
+  />
+</BaseLayout>

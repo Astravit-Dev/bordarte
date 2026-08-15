@@ -1,0 +1,36 @@
+---
+import Button from '@/components/Button.astro'
+import Icon from '@/components/icons/Icon.astro'
+import { getWhatsappUrl, siteConfig } from '@/lib/site-config'
+
+interface Props {
+  title?: string
+  description?: string
+  whatsappMessage?: string
+}
+
+const {
+  title = 'Contanos qué necesitás bordar',
+  description = 'Mandanos tu logo o el diseño que tenés en mente y te respondemos con precio y plazos el mismo día.',
+  whatsappMessage,
+} = Astro.props
+---
+
+<section class="bg-primary text-primary-foreground" aria-labelledby="cta-heading">
+  <div class="mx-auto flex max-w-4xl flex-col items-center gap-6 px-5 py-16 text-center md:px-8 md:py-20">
+    <h2 id="cta-heading" class="text-balance font-serif text-3xl font-medium md:text-4xl">{title}</h2>
+    <p class="max-w-xl text-pretty text-on-primary-muted">{description}</p>
+    <div class="mt-2 flex flex-col items-center gap-3 sm:flex-row">
+      <Button href={getWhatsappUrl(whatsappMessage)} external variant="wood" size="lg">
+        <Icon name="message-circle" class="size-4" />
+        Escribinos por WhatsApp
+      </Button>
+      <a
+        href={`tel:${siteConfig.phoneE164}`}
+        class="text-sm font-medium text-on-primary-muted underline underline-offset-4 transition-colors hover:text-primary-foreground"
+      >
+        o llamanos al {siteConfig.phoneDisplay}
+      </a>
+    </div>
+  </div>
+</section>

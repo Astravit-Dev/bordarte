@@ -1,0 +1,49 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Button from '@/components/Button.astro'
+import Icon from '@/components/icons/Icon.astro'
+import { NAV_LINKS, getWhatsappUrl } from '@/lib/site-config'
+---
+
+<BaseLayout
+  title="Página no encontrada"
+  description="La página que buscás no existe. Volvé al inicio o mirá nuestros servicios de bordado personalizado en Montevideo."
+  path="/404"
+  noindex
+>
+  <section class="bg-primary text-primary-foreground">
+    <div class="mx-auto max-w-3xl px-5 py-20 text-center md:px-8 md:py-28">
+      <p class="eyebrow text-wood-on-dark">Error 404</p>
+      <h1 class="mt-4 text-balance font-serif text-4xl font-medium md:text-5xl">
+        Esta página se descosió
+      </h1>
+      <p class="mx-auto mt-5 max-w-lg text-pretty text-on-primary-muted">
+        El enlace que seguiste no existe o cambió de lugar. Te dejamos por dónde seguir.
+      </p>
+
+      <nav class="mt-10" aria-label="Páginas principales">
+        <ul class="flex flex-wrap justify-center gap-3">
+          {
+            NAV_LINKS.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="inline-flex rounded-full border border-on-primary-subtle px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/10"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="mt-10">
+        <Button href={getWhatsappUrl()} external variant="wood" size="lg">
+          <Icon name="message-circle" class="size-4" />
+          Escribinos por WhatsApp
+        </Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

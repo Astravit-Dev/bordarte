@@ -1,0 +1,22 @@
+# Cloudflare Workers static-assets redirect rules.
+# Redirects are evaluated before _headers rules.
+
+# Legacy service slugs from the previous Next.js site. The services page now
+# uses the same slugs as the client categories, so these anchors kept working
+# only by accident before; make the mapping explicit.
+/servicios/camperas-corporativas    /servicios#corporativo          301
+/servicios/gorras-gorros            /servicios#gorras-gorros        301
+/servicios/remeras-buzos            /servicios#clubes-y-equipos     301
+/servicios/mochilas-accesorios      /servicios#personalizados       301
+/servicios/logos-empresariales      /servicios#logos-empresariales  301
+/servicios/pedidos-mayoristas       /servicios#uniformes-y-grupos   301
+
+# Common alternates so a mistyped or externally-linked URL still lands.
+/inicio      /           301
+/home        /           301
+/servicio    /servicios  301
+/galleria    /galeria    301
+/gallery     /galeria    301
+/about       /nosotros   301
+/contact     /contacto   301
+/contacto/*  /contacto   301

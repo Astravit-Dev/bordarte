@@ -1,0 +1,70 @@
+---
+import { absoluteUrl } from '@/lib/site-config'
+
+interface Props {
+  eyebrow: string
+  title: string
+  description?: string
+  /** Trail of ancestors; the current page is appended automatically. */
+  breadcrumbs?: { label: string; href: string }[]
+}
+
+const { eyebrow, title, description, breadcrumbs = [] } = Astro.props
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/'
+const trail = [{ label: 'Inicio', href: '/' }, ...breadcrumbs]
+---
+
+<section class="bg-primary text-primary-foreground">
+  <div class="mx-auto max-w-6xl px-5 py-12 md:px-8 md:py-16">
+    {
+      trail.length > 0 && (
+        <nav aria-label="Ruta de navegación" class="mb-8">
+          <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-on-primary-subtle">
+            {trail.map((crumb) => (
+              <li class="flex items-center gap-2">
+                <a href={crumb.href} class="transition-colors hover:text-primary-foreground">
+                  {crumb.label}
+                </a>
+                <span aria-hidden="true">/</span>
+              </li>
+            ))}
+            <li aria-current="page" class="text-on-primary-muted">{title}</li>
+          </ol>
+        </nav>
+      )
+    }
+
+    <p class="eyebrow text-wood-on-dark">{eyebrow}</p>
+    <h1 class="mt-4 max-w-3xl text-balance font-serif text-4xl leading-tight font-medium md:text-5xl">
+      {title}
+    </h1>
+    {
+      description && (
+        <p class="mt-5 max-w-2xl text-pretty leading-relaxed text-on-primary-muted">{description}</p>
+      )
+    }
+  </div>
+</section>
+
+<script
+  type="application/ld+json"
+  is:inline
+  set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      ...trail.map((crumb, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: crumb.label,
+        item: absoluteUrl(crumb.href),
+      })),
+      {
+        '@type': 'ListItem',
+        position: trail.length + 1,
+        name: title,
+        item: absoluteUrl(currentPath),
+      },
+    ],
+  })}
+/>

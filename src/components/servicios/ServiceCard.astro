@@ -1,0 +1,69 @@
+---
+import Button from '@/components/Button.astro'
+import Icon from '@/components/icons/Icon.astro'
+import CoverImage from '@/components/CoverImage.astro'
+import { getWhatsappUrl } from '@/lib/site-config'
+import type { ServiceItem } from '@/lib/services-data'
+
+interface Props {
+  service: ServiceItem
+  reversed?: boolean
+  /** The first card is high in the viewport, so it skips lazy loading. */
+  priority?: boolean
+}
+
+const { service, reversed = false, priority = false } = Astro.props
+---
+
+<article id={service.slug} class="grid scroll-mt-28 items-center gap-8 md:grid-cols-2 md:gap-12">
+  <CoverImage
+    class:list={['rounded-sm', reversed && 'md:order-2']}
+    src={service.image}
+    alt={service.imageAlt}
+    ratio="aspect-[4/3]"
+    sizes="(min-width: 768px) 560px, 90vw"
+    widths={[320, 480, 640, 828, 1120]}
+    position={service.imagePosition}
+    priority={priority}
+  />
+
+  <div class={reversed ? 'md:order-1' : undefined}>
+    <h2 class="font-serif text-2xl font-semibold text-foreground md:text-3xl">{service.name}</h2>
+    <p class="mt-3 text-pretty leading-relaxed text-muted-foreground">{service.description}</p>
+
+    <dl class="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+      <div class="flex items-center gap-1.5">
+        <Icon name="layers" class="size-4 text-wood-text" />
+        <dt class="sr-only">Cantidad mínima</dt>
+        <dd>{service.minUnits}</dd>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <Icon name="clock" class="size-4 text-wood-text" />
+        <dt class="sr-only">Plazo de entrega</dt>
+        <dd>{service.turnaround}</dd>
+      </div>
+    </dl>
+
+    <ul class="mt-5 space-y-2">
+      {
+        service.bullets.map((bullet) => (
+          <li class="flex gap-2 text-sm text-foreground">
+            <Icon name="check" class="mt-0.5 size-4 shrink-0 text-wood-text" />
+            <span>{bullet}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <Button
+      href={getWhatsappUrl(`Hola Bordarte! Me interesa cotizar: ${service.name}`)}
+      external
+      variant="primary"
+      size="md"
+      class="mt-6"
+    >
+      <Icon name="message-circle" class="size-4" />
+      Cotizar {service.name.toLowerCase()}
+    </Button>
+  </div>
+</article>
