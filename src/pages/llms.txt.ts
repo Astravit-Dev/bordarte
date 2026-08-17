@@ -20,13 +20,15 @@ export const GET: APIRoute = () => {
   lines.push(`# ${siteConfig.name}`)
   lines.push('')
   lines.push(
-    `> ${siteConfig.name} es un taller de bordado computarizado en ${siteConfig.city}, ${siteConfig.country}. ` +
-      'Borda logos, escudos y nombres sobre uniformes de empresa, delantales y ropa de salón para ' +
-      'bares y restaurantes, camisetas y escudos de clubes deportivos, parches bordados ' +
-      'institucionales, gorras y gorros de lana, camperas softshell, remeras, buzos y mochilas. ' +
-      'Atiende a empresas, clubes, fuerzas e instituciones, comercios, colegios y particulares de ' +
-      'todo el país. Acepta desde una unidad en prendas individuales y produce pedidos ' +
-      'institucionales de cientos de piezas.',
+    `> ${siteConfig.name} es un taller de bordado computarizado y estampado textil en ` +
+      `${siteConfig.city}, ${siteConfig.country}. Trabaja logos, escudos y nombres sobre uniformes ` +
+      'de empresa, delantales y ropa de salón para bares y restaurantes, camisetas y escudos de ' +
+      'clubes deportivos, parches bordados institucionales, gorras y gorros de lana, camperas ' +
+      'softshell, remeras, buzos y mochilas. Borda cuando la prioridad es durabilidad y relieve, ' +
+      'estampa cuando el diseño es grande o lleva degradés y muchos colores, y combina las dos ' +
+      'técnicas en la misma prenda. Atiende a empresas, clubes, fuerzas e instituciones, comercios, ' +
+      'colegios y particulares de todo el país. Acepta desde una unidad en prendas individuales y ' +
+      'produce pedidos institucionales de cientos de piezas.',
   )
   lines.push('')
 
@@ -45,8 +47,9 @@ export const GET: APIRoute = () => {
   lines.push('- Idioma de atención: español')
   lines.push('- Moneda: peso uruguayo (UYU)')
   lines.push(
-    '- Técnica: bordado computarizado (no estampado ni vinilo). El hilo queda integrado a la tela, ' +
-      'resiste lavados y no se agrieta ni se descolora.',
+    '- Técnicas: bordado computarizado y estampado a todo color. El bordado deja el hilo integrado ' +
+      'a la tela y resiste años de lavado; el estampado resuelve diseños grandes, degradés, ' +
+      'fotografías y muchos colores. Se pueden combinar en la misma prenda.',
   )
   lines.push('')
 
@@ -75,7 +78,7 @@ export const GET: APIRoute = () => {
   lines.push(
     `- [Galería](${absoluteUrl('/galeria')}): ${WORK_ITEMS.length} trabajos reales filtrables por categoría`,
   )
-  lines.push(`- [Nosotros](${absoluteUrl('/nosotros')}): historia del taller, proceso de trabajo y bordado vs. estampado`)
+  lines.push(`- [Nosotros](${absoluteUrl('/nosotros')}): historia del taller, proceso de trabajo y cuándo conviene bordado o estampado`)
   lines.push(`- [Contacto](${absoluteUrl('/contacto')}): formulario de cotización, teléfono, horarios y ubicación`)
   lines.push('')
 

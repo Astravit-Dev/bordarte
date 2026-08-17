@@ -1,6 +1,6 @@
 # Bordarte
 
-Sitio del taller de bordado computarizado (Montevideo, Uruguay).
+Sitio del taller de bordado y estampado (Montevideo, Uruguay).
 Astro 7, salida 100% estática, desplegado en Cloudflare Workers.
 
 ## Comandos
@@ -13,7 +13,8 @@ Astro 7, salida 100% estática, desplegado en Cloudflare Workers.
 | `pnpm test:smoke` | Prueba funcional en Chrome real: menú, galería, lightbox, formulario y contenido sin JS |
 | `pnpm shots` | Capturas de todas las páginas en mobile y desktop |
 | `pnpm shots:sections` | Capturas por sección, para revisar un cambio de diseño de cerca |
-| `pnpm deploy` | Build + `wrangler deploy` |
+| `pnpm deploy` | `wrangler deploy` sin compilar (lo usa el CI, que ya corrió el build) |
+| `pnpm deploy:local` | Build + deploy, para desplegar desde tu máquina |
 | `pnpm check` | Chequeo de tipos de Astro |
 
 ## Cómo está armado
@@ -51,6 +52,23 @@ capturas de pantalla o collages con marca de otro taller (`@AYC_BORDADOS`, una
 tabla de medidas de `AMERICAN EMBROYDERY`) que el recorte cuadrado anterior
 tapaba por casualidad. La galería ahora muestra las fotos sin recortar, así que
 cualquier cosa que esté en la imagen se ve.
+
+## Bordado y estampado
+
+El taller hace las dos técnicas, y eso condiciona el copy. La versión anterior
+del sitio argumentaba que el estampado "se agrieta, se pela y pierde color":
+había una tabla entera de *bordado vs. estampado* en `/nosotros`, un value prop
+en la home, un FAQ y una línea del `llms.txt` que decía "(no estampado ni
+vinilo)". Con estampados en catálogo, eso era el sitio desprestigiando su propio
+servicio.
+
+La comparación sigue existiendo con el mismo diseño, pero ahora orienta en vez
+de descartar: cada fila dice cuándo conviene cada técnica. **Si tocás copy sobre
+técnicas, revisá que no vuelva a tratar al estampado como el rival.**
+
+Dos trabajos que estaban cargados como bordado en realidad eran estampado
+—Innova Nexo y los bolsos de Cross Box, con logos planos a todo color— y se
+recategorizaron.
 
 ## Por qué la galería es masonry
 

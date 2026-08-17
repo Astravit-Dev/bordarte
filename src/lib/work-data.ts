@@ -36,6 +36,11 @@ import delantalManyasador from '@/assets/images/delantal-manyasador-personalizad
 import gorroFisher from '@/assets/images/gorro-fisher.jpg'
 import gorroBronx from '@/assets/images/gorro-bronx.jpg'
 import mochilasRinconDelReducto from '@/assets/images/mochilas-rincon-del-reducto.jpg'
+// Estampados
+import camisetaFutbolTecnocolor from '@/assets/images/camiseta-futbol-tecnocolor-zunino.jpg'
+import buzosCorredoresCrossBox from '@/assets/images/buzos-corredores-cross-box.jpg'
+import remeraEstampadaBici from '@/assets/images/remera-estampada-bici.jpg'
+import remeraEstampadaViking from '@/assets/images/remera-estampada-viking.jpg'
 // Gorras y grupos
 import gorrasBronxTrucker from '@/assets/images/gorras-bronx-trucker.jpg'
 import gorrasCalastretti from '@/assets/images/gorras-calastretti.jpg'
@@ -73,6 +78,10 @@ export const IMAGES = {
   gorroFisher,
   gorroBronx,
   mochilasRinconDelReducto,
+  camisetaFutbolTecnocolor,
+  buzosCorredoresCrossBox,
+  remeraEstampadaBici,
+  remeraEstampadaViking,
   gorrasBronxTrucker,
   gorrasCalastretti,
   gorrosDesoreja2,
@@ -150,6 +159,16 @@ export const CATEGORIES: Category[] = [
     image: gorrasCalastretti,
     imageAlt: 'Gorras negras bordadas con el logo de Taller Calastretti Chapa y Pintura',
   },
+  {
+    slug: 'estampados',
+    title: 'Estampados',
+    short: 'Diseños a todo color, grandes o con degradés',
+    description:
+      'Estampado para lo que el bordado no puede hacer: diseños grandes, fotografías, degradés y muchos colores. Sobre remeras, buzos, camisetas de fútbol y bolsos, en tiradas cortas o largas.',
+    image: camisetaFutbolTecnocolor,
+    imageAlt:
+      'Camiseta de fútbol azul marino con los sponsors Tecnocolor Pinturas y Zunino Talleres estampados en el pecho',
+  },
 ]
 
 export type WorkItem = {
@@ -203,16 +222,6 @@ export const WORK_ITEMS: WorkItem[] = [
     product: 'Remeras de trabajo',
     image: remeraKostel,
     imageAlt: 'Remera negra con el logo de Kostel Group bordado en grande en la espalda',
-  },
-  {
-    slug: 'remeras-innova-nexo',
-    client: 'Innova Nexo',
-    category: 'corporativo',
-    product: 'Pedido institucional de remeras',
-    image: remerasInnovaNexo,
-    imageAlt:
-      'Pila de remeras negras dobladas con los logos bordados de Innova Nexo, EBE Pinturas y Club Judo Actitud',
-    featured: true,
   },
   {
     slug: 'softshell-corporativas',
@@ -299,15 +308,6 @@ export const WORK_ITEMS: WorkItem[] = [
     image: gorrosClubNumerados,
     imageAlt:
       'Ocho gorros de lana negros bordados con el escudo del club y el número de cada jugador',
-  },
-  {
-    slug: 'bolsos-cross-box',
-    client: 'Academia Cross Box',
-    category: 'clubes-y-equipos',
-    product: 'Bolsos deportivos',
-    image: bolsosCrossBox,
-    imageAlt:
-      'Bolsos deportivos blancos y negros con el logo de puño de Academia Cross Box bordado tres veces',
   },
   {
     slug: 'diseno-judo-actitud',
@@ -449,6 +449,64 @@ export const WORK_ITEMS: WorkItem[] = [
       'Tres mochilas de vellón gris bordadas con el escudo de Rincón del Reducto y los nombres Tobías, Felipe y Maximiliano',
   },
 
+  // ---------------------------------------------------------------- estampados
+  {
+    slug: 'camiseta-futbol-tecnocolor',
+    client: 'Club de fútbol',
+    category: 'estampados',
+    product: 'Camisetas con sponsors',
+    image: camisetaFutbolTecnocolor,
+    imageAlt:
+      'Jugador con camiseta azul marino y los sponsors Tecnocolor Pinturas y Zunino Talleres estampados en el pecho',
+    featured: true,
+  },
+  {
+    slug: 'remeras-innova-nexo',
+    client: 'Innova Nexo',
+    category: 'estampados',
+    product: 'Pedido institucional de remeras',
+    image: remerasInnovaNexo,
+    imageAlt:
+      'Pila de remeras negras dobladas con los logos estampados a color de Innova Nexo, EBE Pinturas y Club Judo Actitud',
+    featured: true,
+  },
+  {
+    slug: 'bolsos-cross-box',
+    client: 'Academia Cross Box',
+    category: 'estampados',
+    product: 'Bolsos deportivos',
+    image: bolsosCrossBox,
+    imageAlt:
+      'Bolsos deportivos blancos y negros con el logo de puño de Academia Cross Box estampado tres veces',
+  },
+  {
+    slug: 'buzos-corredores-cross-box',
+    client: 'Corredores Cross Box',
+    category: 'estampados',
+    product: 'Diseño de buzos para producción',
+    image: buzosCorredoresCrossBox,
+    imageAlt:
+      'Diseño de buzo negro con capucha, frente y espalda, con el logo de Corredores Cross Box estampado en blanco',
+  },
+  {
+    slug: 'remera-estampada-bici',
+    client: 'Diseños de catálogo',
+    category: 'estampados',
+    product: 'Remera estampada a todo color',
+    image: remeraEstampadaBici,
+    imageAlt:
+      'Remera azul marino con un diseño estampado de bicicleta y la frase “Sometimes I wonder if my bike is thinking about me”',
+  },
+  {
+    slug: 'remera-estampada-viking',
+    client: 'Diseños de catálogo',
+    category: 'estampados',
+    product: 'Remera estampada a todo color',
+    image: remeraEstampadaViking,
+    imageAlt:
+      'Remera azul marino con un diseño estampado de casco vikingo y la frase “Feel safe at night, sleep with a Viking”',
+  },
+
   // ---------------------------------------------------------- gorras y grupos
   {
     slug: 'gorras-bronx-trucker',
@@ -498,6 +556,7 @@ export const CLIENTS = [
   'Bar 71',
   'Tecnocolor',
   'Innova Nexo',
+  'Zunino Talleres',
   'Academia Cross Box',
   'Puesto el 11',
   'Kostel Group',

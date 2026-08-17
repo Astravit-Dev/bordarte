@@ -79,11 +79,11 @@ async function newPage() {
   await page.keyboard.press('Escape')
   const closed = await page.$eval('#lightbox', (d) => d.open)
 
-  ok('all 34 works render in HTML', total === 34, `got ${total}`)
+  ok('all 38 works render in HTML', total === 38, `got ${total}`)
   ok('filter narrows the grid', filtered.visible === 5, `visible=${filtered.visible}`)
   ok('aria-pressed moves to active filter', filtered.pressed === 'true' && filtered.allPressed === 'false')
   ok('status region announces count', /5 trabajos/.test(filtered.status ?? ''), filtered.status)
-  ok('"Todos" restores full grid', restored === 34, `restored=${restored}`)
+  ok('"Todos" restores full grid', restored === 38, `restored=${restored}`)
   ok('lightbox opens as modal', dialog.open === true)
   ok('lightbox loads image + caption', Boolean(dialog.src) && Boolean(dialog.alt) && Boolean(dialog.client), dialog.src ?? '')
   ok('Escape closes lightbox', closed === false)
@@ -140,7 +140,7 @@ async function newPage() {
   await page.goto(`${BASE}/galeria`, { waitUntil: 'domcontentloaded' })
   const visible = await page.$$eval('#gallery-grid > li', (n) => n.filter((l) => !l.hidden).length)
   const text = await page.$eval('body', (b) => b.innerText)
-  ok('gallery fully visible with JS disabled', visible === 34, `visible=${visible}`)
+  ok('gallery fully visible with JS disabled', visible === 38, `visible=${visible}`)
   ok('FAQ answers readable with JS disabled', true)
   await page.close()
 
@@ -158,7 +158,7 @@ async function newPage() {
     answers.every((a) => html.includes(a)),
     answers.filter((a) => !html.includes(a)).join(' | '))
   ok('FAQPage structured data complete',
-    (html.match(/acceptedAnswer/g) ?? []).length === 7,
+    (html.match(/acceptedAnswer/g) ?? []).length === 8,
     `${(html.match(/acceptedAnswer/g) ?? []).length} answers`)
 }
 

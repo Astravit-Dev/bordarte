@@ -123,8 +123,8 @@ export function serviceNodes(): Record<string, unknown>[] {
     '@id': absoluteUrl(`/servicios#${service.slug}`),
     name: service.name,
     description: service.description,
-    serviceType: 'Bordado computarizado',
-    category: 'Bordado personalizado',
+    serviceType: service.serviceType ?? 'Bordado computarizado',
+    category: 'Personalización textil',
     url: absoluteUrl(`/servicios#${service.slug}`),
     provider: { '@id': ORG_ID },
     areaServed: { '@type': 'Country', name: 'Uruguay' },
@@ -160,7 +160,7 @@ export function imageGalleryNode(
     '@id': absoluteUrl('/galeria#gallery'),
     name: 'Galería de trabajos de bordado de Bordarte',
     description:
-      'Trabajos reales de bordado computarizado sobre camperas, gorras, gorros, mochilas y uniformes para empresas y clubes de Uruguay.',
+      'Trabajos reales de bordado computarizado y estampado sobre uniformes, delantales, camisetas, parches, gorras, gorros y mochilas para empresas, clubes e instituciones de Uruguay.',
     associatedMedia: items.map((item) => ({
       '@type': 'ImageObject',
       name: item.name,

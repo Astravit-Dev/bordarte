@@ -8,6 +8,8 @@ export type ServiceItem = {
   image: ImageMetadata
   imageAlt: string
   imagePosition?: string
+  /** Técnica declarada en el JSON-LD. Por defecto, bordado. */
+  serviceType?: string
   minUnits: string
   turnaround: string
   bullets: string[]
@@ -112,6 +114,23 @@ export const SERVICES: ServiceItem[] = [
     ],
   },
   {
+    slug: 'estampados',
+    name: 'Estampados a todo color',
+    description:
+      'Lo que el hilo no puede hacer: diseños grandes, fotografías, degradés y muchos colores. Estampamos remeras, buzos, camisetas de fútbol y bolsos, y combinamos con bordado en la misma prenda cuando conviene.',
+    image: IMAGES.camisetaFutbolTecnocolor,
+    imageAlt:
+      'Camiseta de fútbol con los sponsors Tecnocolor Pinturas y Zunino Talleres estampados a color',
+    serviceType: 'Estampado textil',
+    minUnits: 'Desde 1 unidad',
+    turnaround: '3 a 5 días hábiles',
+    bullets: [
+      'Colores ilimitados, degradés y fotografías sin recargo por color',
+      'Conviene para diseños grandes: espaldas completas y frentes',
+      'Se combina con bordado en la misma prenda: logo bordado al pecho, arte estampado atrás',
+    ],
+  },
+  {
     slug: 'logos-empresariales',
     name: 'Digitalización de logos',
     description:
@@ -161,8 +180,13 @@ export const FAQS = [
       'Sí. Trabajamos con parches y escudos para instituciones, fuerzas y clubes, respetando colores y proporciones del emblema original. Si el escudo tiene texto chico lo ajustamos para que se lea con nitidez.',
   },
   {
-    question: '¿Cuánto dura un bordado comparado con un estampado?',
+    question: '¿Me conviene bordado o estampado?',
     answer:
-      'El bordado queda integrado a la tela con hilo, así que resiste años de lavado sin agrietarse ni perder color, a diferencia del estampado que se pela y se descolora con el uso.',
+      'Depende del diseño. El bordado dura más y da una terminación con relieve, ideal para logos, escudos y ropa de trabajo que se lava seguido. El estampado resuelve lo que el hilo no puede: diseños grandes, fotografías, degradés y muchos colores, y sale más económico en tiradas cortas. Hacemos las dos y también las combinamos en la misma prenda. Contanos qué necesitás y te decimos qué rinde mejor.',
+  },
+  {
+    question: '¿Pueden combinar bordado y estampado en la misma prenda?',
+    answer:
+      'Sí, y es lo que más recomendamos para uniformes: el logo bordado al pecho, que es lo que se ve de cerca y tiene que durar, y el arte grande estampado en la espalda.',
   },
 ]

@@ -1,21 +1,40 @@
 ---
 import Icon from '@/components/icons/Icon.astro'
 
+/**
+ * Antes esta tabla era "bordado vs. estampado" y decía que el estampado se
+ * agrieta, se pela y queda plano. Dejó de servir cuando el taller empezó a
+ * ofrecer estampados: el sitio quedaba desprestigiando su propio servicio.
+ *
+ * Ahora compara para orientar, no para descartar. Cada fila dice cuándo
+ * conviene cada técnica, que además es lo que un cliente necesita saber antes
+ * de pedir presupuesto.
+ */
 const COMPARISON = [
   {
     aspect: 'Durabilidad',
     bordado: 'El hilo queda integrado a la tela. Resiste años de lavado sin perder forma ni color.',
-    estampado: 'Se agrieta, se pela y pierde color después de varios lavados.',
+    estampado: 'Muy buena con la técnica adecuada, aunque el bordado la supera en prendas de uso diario.',
+  },
+  {
+    aspect: 'Colores y detalle',
+    bordado: 'Hasta 6 colores de hilo por diseño. El texto muy chico se ajusta para que se lea.',
+    estampado: 'Colores ilimitados, degradés y fotografías, sin recargo por cantidad de colores.',
+  },
+  {
+    aspect: 'Tamaño del diseño',
+    bordado: 'Ideal en logos y escudos: pecho, manga, cuello o frente de gorra.',
+    estampado: 'La opción para diseños grandes: espaldas completas y frentes de remera.',
   },
   {
     aspect: 'Terminación',
-    bordado: 'Textura y relieve que se ven y se sienten como un trabajo profesional.',
-    estampado: 'Queda plano sobre la tela, se nota como una impresión.',
+    bordado: 'Textura y relieve que se ven y se sienten. Es lo que da imagen de uniforme.',
+    estampado: 'Plano y liso sobre la tela, sin sumar peso ni volumen a la prenda.',
   },
   {
-    aspect: 'Prendas oscuras',
-    bordado: 'El hilo mantiene el color exacto sin importar la base.',
-    estampado: 'Suele necesitar más capas y pierde nitidez en telas negras o azul marino.',
+    aspect: 'Cuándo elegirlo',
+    bordado: 'Uniformes, ropa de trabajo, gorras, parches y regalos que se conservan.',
+    estampado: 'Remeras de evento, camisetas con sponsors, tiradas cortas y arte a todo color.',
   },
 ]
 ---
@@ -23,28 +42,33 @@ const COMPARISON = [
 <section class="bg-muted" aria-labelledby="why-choose-heading">
   <div class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
     <div class="max-w-2xl">
-      <p class="eyebrow text-wood-text">Por qué bordado</p>
+      <p class="eyebrow text-wood-text">Bordado y estampado</p>
       <h2
         id="why-choose-heading"
         class="mt-4 text-balance font-serif text-3xl font-medium text-foreground md:text-4xl"
       >
-        Bordado vs. estampado: la diferencia se nota al segundo lavado
+        Cuál conviene según la prenda y el diseño
       </h2>
+      <p class="mt-5 text-pretty leading-relaxed text-muted-foreground">
+        Hacemos las dos técnicas, así que no te vamos a empujar a una. En muchos pedidos la mejor
+        respuesta es combinarlas: el logo bordado al pecho, que se ve de cerca y tiene que durar, y
+        el arte grande estampado en la espalda.
+      </p>
     </div>
 
     {/* A real table: agents and screen readers get row/column relationships
          for free, instead of having to infer them from a CSS grid. */}
     <div class="mt-10 overflow-x-auto rounded-sm ring-1 ring-border">
-      <table class="w-full min-w-[36rem] border-collapse text-left">
+      <table class="w-full min-w-[42rem] border-collapse text-left">
         <caption class="sr-only">
-          Comparación entre bordado y estampado según durabilidad, terminación y comportamiento en
-          prendas oscuras
+          Comparación entre bordado y estampado según durabilidad, colores y detalle, tamaño del
+          diseño, terminación y cuándo elegir cada técnica
         </caption>
         <thead>
           <tr class="bg-primary text-primary-foreground">
             <th scope="col" class="p-5 text-sm font-semibold">Aspecto</th>
-            <th scope="col" class="p-5 text-sm font-semibold">Bordado Bordarte</th>
-            <th scope="col" class="p-5 text-sm font-semibold text-on-primary-muted">Estampado</th>
+            <th scope="col" class="p-5 text-sm font-semibold">Bordado</th>
+            <th scope="col" class="p-5 text-sm font-semibold">Estampado</th>
           </tr>
         </thead>
         <tbody>
@@ -60,9 +84,9 @@ const COMPARISON = [
                     <span>{row.bordado}</span>
                   </span>
                 </td>
-                <td class="p-5 align-top text-sm text-subtle-foreground">
+                <td class="p-5 align-top text-sm text-muted-foreground">
                   <span class="flex gap-2">
-                    <Icon name="x" class="mt-0.5 size-4 shrink-0 text-subtle-foreground" />
+                    <Icon name="check" class="mt-0.5 size-4 shrink-0 text-wood-text" />
                     <span>{row.estampado}</span>
                   </span>
                 </td>
