@@ -19,6 +19,14 @@
     "not_found_handling": "404-page"
   },
 
+  // El dominio queda declarado acá y no sólo clickeado en el panel: así
+  // `wrangler deploy` lo reprovisiona solo si alguien recrea el Worker, y el
+  // registro DNS proxied lo crea Cloudflare (no hay que agregar A ni CNAME a
+  // mano — de hecho hacerlo rompe el enrutado al Worker).
+  "routes": [
+    { "pattern": "bordarteuy.com", "custom_domain": true }
+  ],
+
   "observability": {
     "enabled": true
   }

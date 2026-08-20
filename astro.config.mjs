@@ -3,7 +3,7 @@ import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
 import cspHashes from './integrations/csp-hashes.mjs'
 
-const SITE = 'https://bordarte.uy'
+const SITE = 'https://bordarteuy.com'
 
 export default defineConfig({
   site: SITE,

@@ -4,7 +4,7 @@ export const siteConfig = {
   tagline: 'Bordados que dejan huella',
   description:
     'Taller de bordado y estampado personalizado en Montevideo, Uruguay. Bordado computarizado y estampado a todo color sobre uniformes, delantales, camisetas, parches, gorros, gorras y mochilas para empresas, clubes, instituciones y particulares.',
-  url: 'https://bordarte.uy',
+  url: 'https://bordarteuy.com',
   locale: 'es-UY',
   phoneDisplay: '+598 97 984 794',
   phoneE164: '+59897984794',
