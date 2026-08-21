@@ -122,7 +122,7 @@ async function newPage() {
   })
 
   const decoded = decodeURIComponent(opened ?? '')
-  ok('form composes WhatsApp message', decoded.includes('wa.me/59897984794'), opened ?? 'nothing opened')
+  ok('form composes WhatsApp message', decoded.includes('wa.me/59894383012'), opened ?? 'nothing opened')
   ok('message carries all three fields',
     decoded.includes('Ana Pérez') && decoded.includes('Campera softshell') && decoded.includes('20 unidades'),
     decoded.slice(0, 120))
