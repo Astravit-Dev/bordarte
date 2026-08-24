@@ -32,6 +32,7 @@ export const GET: APIRoute = () => {
     '',
     ...AGENT_CRAWLERS.flatMap((agent) => [`User-agent: ${agent}`, 'Allow: /', '']),
     `Sitemap: ${siteConfig.url}/sitemap-index.xml`,
+    `Sitemap: ${siteConfig.url}/sitemap-images.xml`,
     '',
     '# Structured summary for language models and browsing agents',
     `# ${siteConfig.url}/llms.txt`,

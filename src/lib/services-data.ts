@@ -8,6 +8,8 @@ export type ServiceItem = {
   image: ImageMetadata
   imageAlt: string
   imagePosition?: string
+  /** Meta description de la página del servicio. Máximo 155 caracteres. */
+  metaDescription: string
   /** Técnica declarada en el JSON-LD. Por defecto, bordado. */
   serviceType?: string
   minUnits: string
@@ -27,6 +29,8 @@ export const SERVICES: ServiceItem[] = [
       'Bordamos el logo de tu empresa en polos, camperas polares, softshell, rompevientos y remeras de trabajo. Uniformamos al equipo completo con una terminación que aguanta el uso diario y los lavados.',
     image: IMAGES.poloEuropcar,
     imageAlt: 'Polo negro de uniforme con el logo de Europcar bordado en el pecho y en la manga',
+    metaDescription:
+      'Uniformes corporativos bordados en Montevideo: polos, camperas polares y softshell con el logo de tu empresa. Desde 1 unidad, 3 a 5 días.',
     imagePosition: 'object-[50%_35%]',
     minUnits: 'Desde 1 unidad',
     turnaround: '3 a 5 días hábiles',
@@ -44,6 +48,8 @@ export const SERVICES: ServiceItem[] = [
     image: IMAGES.uniformeViejoSosa,
     imageAlt:
       'Uniforme completo de parrilla: polo azul y delantal a juego con el logo de El Viejo Sosa bordado',
+    metaDescription:
+      'Delantales y uniformes bordados para bares, parrillas y restaurantes en Montevideo. Logo en prenda y delantal. Desde 2 unidades.',
     minUnits: 'Desde 2 unidades',
     turnaround: '4 a 7 días hábiles',
     bullets: [
@@ -59,6 +65,8 @@ export const SERVICES: ServiceItem[] = [
       'Escudos institucionales, camisetas con sponsors, gorros numerados por jugador y bolsos deportivos. Trabajamos con clubes de fútbol, karate, judo y academias de todo el país.',
     image: IMAGES.camisetaCebollati,
     imageAlt: 'Camiseta de Cebollati Fútbol Club con el escudo del club bordado en el pecho',
+    metaDescription:
+      'Escudos bordados, camisetas con sponsors y bolsos para clubes de Uruguay. Números y nombres por jugador. Desde 1 unidad, 3 a 6 días.',
     minUnits: 'Desde 1 unidad',
     turnaround: '3 a 6 días hábiles',
     bullets: [
@@ -75,6 +83,8 @@ export const SERVICES: ServiceItem[] = [
     image: IMAGES.parcheIaa,
     imageAlt:
       'Parche bordado del Instituto de Adiestramiento Aeronáutico cosido sobre campera verde militar',
+    metaDescription:
+      'Parches bordados a medida en Montevideo para instituciones, fuerzas y clubes. Borde terminado, listos para coser. Desde 10 unidades.',
     minUnits: 'Desde 10 unidades',
     turnaround: '5 a 8 días hábiles',
     bullets: [
@@ -90,6 +100,8 @@ export const SERVICES: ServiceItem[] = [
       'Delantales, mochilas, bolsos y prendas con nombres bordados uno por uno. Es lo que más nos piden para egresos, cumpleaños, día del padre y regalos de fin de año.',
     image: IMAGES.delantalManyasador,
     imageAlt: 'Delantal de jean bordado con un texto personalizado para regalo',
+    metaDescription:
+      'Delantales, mochilas y prendas con nombre bordado en Montevideo. Ideal para egresos y regalos. Desde 1 unidad, 2 a 4 días hábiles.',
     minUnits: 'Desde 1 unidad',
     turnaround: '2 a 4 días hábiles',
     bullets: [
@@ -105,6 +117,8 @@ export const SERVICES: ServiceItem[] = [
       'Gorras trucker, jockeys y gorros de lana bordados en volumen para talleres, comercios, cuadrillas 4x4 y grupos de amigos.',
     image: IMAGES.gorrasCalastretti,
     imageAlt: 'Gorras negras bordadas con el logo de Taller Calastretti Chapa y Pintura',
+    metaDescription:
+      'Gorras y gorros de lana bordados en cantidad en Montevideo, para talleres, comercios y grupos. Desde 6 unidades, 2 a 4 días hábiles.',
     minUnits: 'Desde 6 unidades',
     turnaround: '2 a 4 días hábiles',
     bullets: [
@@ -121,6 +135,8 @@ export const SERVICES: ServiceItem[] = [
     image: IMAGES.camisetaFutbolTecnocolor,
     imageAlt:
       'Camiseta de fútbol con los sponsors Tecnocolor Pinturas y Zunino Talleres estampados a color',
+    metaDescription:
+      'Estampado textil a todo color en Montevideo: remeras, buzos y camisetas de fútbol. Degradés y fotos sin recargo. Desde 1 unidad.',
     serviceType: 'Estampado textil',
     minUnits: 'Desde 1 unidad',
     turnaround: '3 a 5 días hábiles',
@@ -138,6 +154,8 @@ export const SERVICES: ServiceItem[] = [
     image: IMAGES.disenoJudoActitud,
     imageAlt:
       'Diseño digitalizado de remera frente y espalda, con logos y nombre listos para bordar',
+    metaDescription:
+      'Digitalización de logos para bordado en Montevideo. Convertimos tu logo en archivo de puntadas. Por diseño, 1 a 2 días hábiles.',
     minUnits: 'Por diseño',
     turnaround: '1 a 2 días hábiles',
     bullets: [

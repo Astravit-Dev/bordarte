@@ -86,7 +86,7 @@ export const GET: APIRoute = () => {
   lines.push('')
   for (const service of SERVICES) {
     lines.push(
-      `- [${service.name}](${absoluteUrl(`/servicios#${service.slug}`)}): ${service.description} ` +
+      `- [${service.name}](${absoluteUrl(`/servicios/${service.slug}`)}): ${service.description} ` +
         `Mínimo: ${service.minUnits.toLowerCase()}. Plazo: ${service.turnaround}. ` +
         `${service.bullets.join('. ')}.`,
     )
@@ -97,7 +97,7 @@ export const GET: APIRoute = () => {
   lines.push('')
   for (const category of CATEGORIES) {
     lines.push(
-      `- [${category.title}](${absoluteUrl(`/servicios#${category.slug}`)}): ${category.description}`,
+      `- [${category.title}](${absoluteUrl(`/servicios/${category.slug}`)}): ${category.description}`,
     )
   }
   lines.push('')

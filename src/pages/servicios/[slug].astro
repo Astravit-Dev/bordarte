@@ -1,0 +1,206 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PageHeader from '@/components/PageHeader.astro'
+import Button from '@/components/Button.astro'
+import Icon from '@/components/icons/Icon.astro'
+import CoverImage from '@/components/CoverImage.astro'
+import StitchDivider from '@/components/StitchDivider.astro'
+import CtaSection from '@/components/CtaSection.astro'
+import { SERVICES } from '@/lib/services-data'
+import { WORK_ITEMS } from '@/lib/work-data'
+import { getWhatsappUrl, absoluteUrl } from '@/lib/site-config'
+import { webPage, ORG_ID } from '@/lib/structured-data'
+
+/**
+ * Una página por servicio.
+ *
+ * Antes cada servicio vivía como ancla (`/servicios#estampados`). Una ancla no
+ * es una URL indexable: Google no la rankea por separado, así que ocho líneas
+ * de negocio competían por posicionar una sola página. Acá cada una tiene su
+ * propio title, description, H1, breadcrumb y nodo Service en el JSON-LD.
+ *
+ * El contenido no repite el de `/servicios`: esa página es el índice con un
+ * resumen por servicio, y esta agrega los trabajos reales de la categoría.
+ */
+export function getStaticPaths() {
+  return SERVICES.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }))
+}
+
+const { service } = Astro.props
+const path = `/servicios/${service.slug}`
+
+// Trabajos de la misma categoría: es lo que diferencia esta página del índice.
+const works = WORK_ITEMS.filter((item) => item.category === service.slug)
+
+const title = service.name
+const description = service.metaDescription
+
+const serviceNode = {
+  '@type': 'Service',
+  '@id': `${absoluteUrl(path)}#service`,
+  name: service.name,
+  description: service.description,
+  serviceType: service.serviceType ?? 'Bordado computarizado',
+  category: 'Personalización textil',
+  url: absoluteUrl(path),
+  provider: { '@id': ORG_ID },
+  areaServed: { '@type': 'Country', name: 'Uruguay' },
+  termsOfService: `${service.minUnits}. Plazo estimado: ${service.turnaround}.`,
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: service.name,
+    itemListElement: service.bullets.map((bullet) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: bullet },
+    })),
+  },
+}
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path={path}
+  jsonLd={[webPage({ path, name: title, description }), serviceNode]}
+>
+  <PageHeader
+    eyebrow="Servicio"
+    title={service.name}
+    description={service.description}
+    breadcrumbs={[{ label: 'Servicios', href: '/servicios' }]}
+  />
+
+  <section class="py-16 md:py-24" aria-labelledby="detalle-heading">
+    <div class="mx-auto grid max-w-6xl items-start gap-10 px-5 md:px-8 lg:grid-cols-[1fr_0.9fr] lg:gap-16">
+      <CoverImage
+        class="rounded-sm"
+        src={service.image}
+        alt={service.imageAlt}
+        ratio="aspect-[4/3]"
+        sizes="(min-width: 1024px) 600px, 90vw"
+        widths={[320, 480, 640, 828, 1120]}
+        position={service.imagePosition}
+        priority
+      />
+
+      <div>
+        <h2 id="detalle-heading" class="font-serif text-2xl font-medium text-foreground md:text-3xl">
+          Qué incluye
+        </h2>
+
+        <dl class="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-sm text-muted-foreground">
+          <div class="flex items-center gap-1.5">
+            <Icon name="layers" class="size-4 text-wood-text" />
+            <dt class="sr-only">Cantidad mínima</dt>
+            <dd>{service.minUnits}</dd>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <Icon name="clock" class="size-4 text-wood-text" />
+            <dt class="sr-only">Plazo de entrega</dt>
+            <dd>{service.turnaround}</dd>
+          </div>
+        </dl>
+
+        <ul class="mt-6 space-y-3">
+          {
+            service.bullets.map((bullet) => (
+              <li class="flex gap-2.5 text-sm leading-relaxed text-foreground">
+                <Icon name="check" class="mt-0.5 size-4 shrink-0 text-wood-text" />
+                <span>{bullet}</span>
+              </li>
+            ))
+          }
+        </ul>
+
+        <Button
+          href={getWhatsappUrl(`Hola Bordarte! Quiero cotizar: ${service.name}`)}
+          external
+          variant="primary"
+          size="lg"
+          class="mt-8"
+        >
+          <Icon name="message-circle" class="size-4" />
+          Cotizar por WhatsApp
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  {
+    works.length > 0 && (
+      <section class="border-t border-border bg-muted py-16 md:py-24" aria-labelledby="trabajos-heading">
+        <div class="mx-auto max-w-6xl px-5 md:px-8">
+          <p class="eyebrow text-wood-text">Trabajos realizados</p>
+          <h2
+            id="trabajos-heading"
+            class="mt-4 text-balance font-serif text-3xl font-medium text-foreground md:text-4xl"
+          >
+            {service.name} que ya entregamos
+          </h2>
+          <StitchDivider class="mt-8 max-w-24" />
+
+          <ul class="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
+            {
+              works.map((item) => (
+                <li class="group overflow-hidden rounded-sm bg-card ring-1 ring-border">
+                  <CoverImage
+                    src={item.image}
+                    alt={item.imageAlt}
+                    ratio="aspect-[4/5]"
+                    sizes="(min-width: 768px) 320px, 45vw"
+                    widths={[240, 320, 480, 640]}
+                    position={item.imagePosition}
+                    imgClass="transition-transform duration-300 group-hover:scale-[1.03]"
+                  />
+                  <div class="p-3 md:p-4">
+                    <p class="text-sm font-semibold text-foreground">{item.client}</p>
+                    <p class="text-xs text-muted-foreground">{item.product}</p>
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+
+          <a
+            href="/galeria"
+            class="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-wood-text transition-colors hover:text-foreground"
+          >
+            Ver toda la galería
+            <Icon name="arrow-right" class="size-3.5" />
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="py-16 md:py-20" aria-labelledby="otros-heading">
+    <div class="mx-auto max-w-6xl px-5 md:px-8">
+      <h2 id="otros-heading" class="font-serif text-2xl font-medium text-foreground">
+        Otros servicios
+      </h2>
+      <ul class="mt-6 flex flex-wrap gap-2">
+        {
+          SERVICES.filter((s) => s.slug !== service.slug).map((s) => (
+            <li>
+              <a
+                href={`/servicios/${s.slug}`}
+                class="inline-flex rounded-full border border-border bg-card px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-wood hover:text-foreground"
+              >
+                {s.name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaSection
+    title={`¿Necesitás ${service.name.toLowerCase()}?`}
+    description="Mandanos tu logo o el diseño que tenés en mente y te respondemos con precio y plazos el mismo día."
+    whatsappMessage={`Hola Bordarte! Quiero cotizar: ${service.name}`}
+  />
+</BaseLayout>

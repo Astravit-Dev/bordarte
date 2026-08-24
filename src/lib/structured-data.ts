@@ -73,7 +73,7 @@ export function buildOrganizationGraph(): Record<string, unknown>[] {
         '@type': 'Offer',
         name: service.name,
         description: service.description,
-        url: absoluteUrl(`/servicios#${service.slug}`),
+        url: absoluteUrl(`/servicios/${service.slug}`),
         priceCurrency: 'UYU',
         availability: 'https://schema.org/InStock',
         areaServed: 'UY',
@@ -120,12 +120,12 @@ export function webPage({
 export function serviceNodes(): Record<string, unknown>[] {
   return SERVICES.map((service) => ({
     '@type': 'Service',
-    '@id': absoluteUrl(`/servicios#${service.slug}`),
+    '@id': `${absoluteUrl(`/servicios/${service.slug}`)}#service`,
     name: service.name,
     description: service.description,
     serviceType: service.serviceType ?? 'Bordado computarizado',
     category: 'Personalización textil',
-    url: absoluteUrl(`/servicios#${service.slug}`),
+    url: absoluteUrl(`/servicios/${service.slug}`),
     provider: { '@id': ORG_ID },
     areaServed: { '@type': 'Country', name: 'Uruguay' },
     termsOfService: `${service.minUnits}. Plazo estimado: ${service.turnaround}.`,
