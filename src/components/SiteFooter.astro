@@ -76,8 +76,18 @@ const year = new Date().getFullYear()
 
     <div class="stitch-line-dark mt-10 opacity-60" role="presentation"></div>
 
-    <p class="mt-6 text-xs text-on-primary-subtle">
-      © {year} {siteConfig.name} — {siteConfig.tagline}. Todos los derechos reservados.
-    </p>
+    <div class="mt-6 flex flex-col gap-2 text-xs text-on-primary-subtle sm:flex-row sm:items-center sm:justify-between">
+      <p>
+        © {year} {siteConfig.name} — {siteConfig.tagline}. Todos los derechos reservados.
+      </p>
+      <a
+        href="https://astravit.com"
+        target="_blank"
+        rel="noopener"
+        class="transition-colors hover:text-primary-foreground"
+      >
+        Desarrollado por: <span class="text-primary-foreground">Astravit</span>
+      </a>
+    </div>
   </div>
 </footer>
