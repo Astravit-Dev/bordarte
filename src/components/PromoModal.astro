@@ -1,0 +1,155 @@
+---
+import CoverImage from '@/components/CoverImage.astro'
+import Icon from '@/components/icons/Icon.astro'
+import { GIFTS, REGALOS_PATH, FALLBACK_ALT } from '@/lib/regalos-data'
+
+/**
+ * Pop-up de ofertas: al entrar al sitio aparece uno de los afiches de
+ * regalos empresariales, elegido al azar, y lleva a su producto en
+ * /regalos-empresariales. Si la persona lo cierra, la página sigue en el menú.
+ *
+ * Los cuatro afiches van en el HTML pero con `hidden` y `loading="lazy"`, así
+ * que el navegador sólo descarga el que se muestra. Sin JavaScript el diálogo
+ * nunca se abre, y el contenido de la página no depende de él.
+ */
+---
+
+<dialog
+  id="promo-dialog"
+  aria-label="Oferta de regalos empresariales"
+  tabindex="-1"
+  class="promo-dialog m-auto max-h-none max-w-none overflow-visible border-0 bg-transparent p-0 outline-none backdrop:bg-primary/80"
+>
+  <div class="relative">
+    <form method="dialog">
+      <button
+        type="submit"
+        class="absolute -top-3 -right-3 z-10 flex size-10 items-center justify-center rounded-full bg-card text-foreground shadow-lg ring-1 ring-border transition-colors hover:bg-muted"
+        aria-label="Cerrar oferta"
+      >
+        <Icon name="x" class="size-5" />
+      </button>
+    </form>
+
+    {
+      GIFTS.map((gift) => {
+        // El ancho tiene tres topes: el ancho del teléfono, un máximo para
+        // escritorio y lo que entra en el alto de la pantalla con la proporción
+        // de este afiche (los 9rem dejan lugar a la franja del botón y un
+        // margen). Fijarlo de antemano reserva la caja antes de que llegue la
+        // imagen, así el cuadro no salta al cargar.
+        const ratio = (gift.image.width / gift.image.height).toFixed(4)
+        return (
+          <a
+            href={`${REGALOS_PATH}#${gift.slug}`}
+            hidden
+            data-promo-item={gift.slug}
+            class="group block overflow-hidden rounded-md bg-card shadow-2xl"
+            style={`width: min(90vw, 26rem, calc((100dvh - 9rem) * ${ratio}))`}
+          >
+            <CoverImage
+              src={gift.image}
+              alt={gift.info?.imageAlt ?? FALLBACK_ALT}
+              sizes="(min-width: 480px) 416px, 90vw"
+              widths={[360, 480, 640, 720, 840]}
+            />
+            <span class="flex items-center justify-center gap-2 bg-wood-solid px-4 py-3 text-sm font-medium text-wood-foreground transition-colors group-hover:bg-wood-solid-hover">
+              Ver regalos empresariales
+              <Icon name="arrow-right" class="size-4" />
+            </span>
+          </a>
+        )
+      })
+    }
+  </div>
+</dialog>
+
+<style>
+  .promo-dialog[open] {
+    animation: promo-in 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .promo-dialog[open]::backdrop {
+    animation: promo-fade 280ms ease-out;
+  }
+  @keyframes promo-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.96);
+    }
+  }
+  @keyframes promo-fade {
+    from {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  const dialog = document.getElementById('promo-dialog') as HTMLDialogElement | null
+  const LAST_KEY = 'bordarte:promo-ultima'
+
+  /**
+   * "Entrar al sitio" = llegar desde afuera (Google, Instagram, un link
+   * directo) o recargar. Navegar entre páginas del sitio no cuenta: el aviso
+   * en cada clic del menú espanta más de lo que vende. Volver atrás tampoco.
+   */
+  const arrivedFromOutside = () => {
+    const entry = performance.getEntriesByType('navigation')[0] as
+      | PerformanceNavigationTiming
+      | undefined
+    const type = entry?.type ?? 'navigate'
+    if (type === 'reload') return true
+    if (type !== 'navigate') return false
+    try {
+      return new URL(document.referrer).origin !== location.origin
+    } catch {
+      return true // sin referrer: URL escrita a mano, favorito, app
+    }
+  }
+
+  if (dialog && arrivedFromOutside()) {
+    const items = Array.from(dialog.querySelectorAll<HTMLAnchorElement>('[data-promo-item]'))
+
+    // Al azar, pero sin repetir el de la visita anterior: con cuatro afiches,
+    // ver el mismo dos veces seguidas parece un error más que una casualidad.
+    let last: string | null = null
+    try {
+      last = localStorage.getItem(LAST_KEY)
+    } catch {}
+    const pool = items.length > 1 ? items.filter((item) => item.dataset.promoItem !== last) : items
+    const pick = pool[Math.floor(Math.random() * pool.length)]
+
+    if (pick) {
+      // Los afiches viajan con loading="lazy" para que los otros tres no se
+      // descarguen nunca. Al elegido se le saca: apenas se abre pasa a ser lo
+      // más grande de la pantalla (el LCP), y lazy le suma una espera de
+      // layout y le baja la prioridad frente al resto de la página.
+      const image = pick.querySelector('img')
+      if (image) {
+        image.loading = 'eager'
+        image.fetchPriority = 'high'
+      }
+      pick.hidden = false
+      try {
+        localStorage.setItem(LAST_KEY, pick.dataset.promoItem ?? '')
+      } catch {}
+
+      // Cerrarlo antes de salir: si no, al volver atrás el navegador restaura
+      // la página desde la bfcache con el aviso todavía encima.
+      pick.addEventListener('click', () => dialog.close())
+
+      // La caja del diálogo mide lo mismo que su contenido, así que un clic
+      // que cae en el propio <dialog> es un clic en el fondo oscuro.
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) dialog.close()
+      })
+
+      dialog.showModal()
+      // showModal() enfoca la X, y como todavía no hubo clic el navegador le
+      // dibuja el anillo de foco de teclado: parece un botón trabado. Enfocar
+      // el diálogo en sí lo evita; el lector de pantalla anuncia el aviso y
+      // Tab sigue llevando a la X.
+      dialog.focus()
+    }
+  }
+</script>

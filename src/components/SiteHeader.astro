@@ -11,7 +11,7 @@ const pathname = Astro.url.pathname.replace(/\/$/, '') || '/'
   <div class="mx-auto flex h-20 max-w-6xl items-center justify-between px-5 md:px-8">
     <Logo href={pathname === '/' ? null : '/'} priority />
 
-    <nav class="hidden items-center gap-8 lg:flex" aria-label="Navegación principal">
+    <nav class="hidden items-center gap-5 lg:flex xl:gap-8" aria-label="Navegación principal">
       {
         NAV_LINKS.map((link) => {
           const isCurrent = pathname === link.href
@@ -20,7 +20,7 @@ const pathname = Astro.url.pathname.replace(/\/$/, '') || '/'
               href={link.href}
               aria-current={isCurrent ? 'page' : undefined}
               class:list={[
-                'text-sm font-medium tracking-wide transition-colors hover:text-primary-foreground',
+                'text-sm font-medium tracking-wide whitespace-nowrap transition-colors hover:text-primary-foreground',
                 isCurrent ? 'text-primary-foreground' : 'text-on-primary-muted',
               ]}
             >

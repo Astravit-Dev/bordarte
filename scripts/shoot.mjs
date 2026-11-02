@@ -9,7 +9,7 @@ import { mkdir } from 'node:fs/promises'
 
 const BASE = process.env.BASE ?? 'http://127.0.0.1:8800'
 const OUT = process.argv[2] ?? 'shots'
-const PAGES = ['/', '/servicios', '/galeria', '/nosotros', '/contacto']
+const PAGES = ['/', '/servicios', '/regalos-empresariales', '/galeria', '/nosotros', '/contacto']
 const VIEWPORTS = [
   { name: 'mobile', width: 390, height: 844, deviceScaleFactor: 2 },
   { name: 'desktop', width: 1440, height: 900, deviceScaleFactor: 1 },
@@ -27,7 +27,9 @@ for (const vp of VIEWPORTS) {
   for (const path of PAGES) {
     const page = await browser.newPage()
     await page.setViewport(vp)
-    await page.goto(`${BASE}${path}`, { waitUntil: 'networkidle2' })
+    // Same-origin referrer: arrive as if already browsing, so the offers
+    // pop-up does not cover every capture.
+    await page.goto(`${BASE}${path}`, { waitUntil: 'networkidle2', referer: `${BASE}/` })
 
     // Force every lazy image to load before capturing the full page.
     await page.evaluate(async () => {

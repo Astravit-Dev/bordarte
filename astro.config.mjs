@@ -79,7 +79,7 @@ export default defineConfig({
       lastmod: new Date(),
       serialize(item) {
         // The home page is the entry point for crawlers and agents; the money
-        // pages (services, gallery) rank just below it.
+        // pages (services, gallery, corporate gifts) rank just below it.
         // The origin is emitted without a trailing slash here while the
         // canonical resolves to `${SITE}/`. Both normalise to the same URL per
         // the URL spec, and the integration re-applies `trailingSlash` after
@@ -87,7 +87,11 @@ export default defineConfig({
         if (item.url === SITE || item.url === `${SITE}/`) {
           return { ...item, priority: 1.0, changefreq: 'weekly' }
         }
-        if (item.url.includes('/servicios') || item.url.includes('/galeria')) {
+        if (
+          item.url.includes('/servicios') ||
+          item.url.includes('/galeria') ||
+          item.url.includes('/regalos-empresariales')
+        ) {
           return { ...item, priority: 0.9 }
         }
         return { ...item, priority: 0.7 }

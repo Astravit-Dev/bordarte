@@ -53,6 +53,44 @@ tabla de medidas de `AMERICAN EMBROYDERY`) que el recorte cuadrado anterior
 tapaba por casualidad. La galería ahora muestra las fotos sin recortar, así que
 cualquier cosa que esté en la imagen se ve.
 
+## Regalos empresariales y pop-up de ofertas
+
+**Toda foto que esté en `src/assets/ofertas/` aparece sola** en
+`/regalos-empresariales` y entra en el sorteo del pop-up que sale al entrar al
+sitio. No hace falta tocar código: se suelta el archivo y se vuelve a compilar.
+
+- **Sin datos cargados**, el afiche va a la grilla "Más ofertas" con un botón
+  de WhatsApp. El build avisa: `[regalos] Afiches sin datos en GIFT_INFO`.
+- **Con datos** en `GIFT_INFO` (`src/lib/regalos-data.ts`), sube a la lista
+  principal con título, precios y detalles, y suma JSON-LD y `llms.txt`. La
+  clave es el nombre del archivo sin extensión (`vaso-termico.png` →
+  `'vaso-termico'`), y es también el ancla: `/regalos-empresariales#vaso-termico`.
+  Conviene darle un nombre corto en kebab-case antes de cargarle datos.
+- **Renombrar un afiche que tiene datos rompe el build a propósito**, con un
+  mensaje que dice cuál. Es preferible a que el producto desaparezca sin aviso.
+- **El precio está en dos lugares**: en los datos y horneado en el afiche. Si
+  cambia uno, cambia el otro.
+- Sacar una oferta = borrar el archivo (y su entrada en `GIFT_INFO`, si tenía).
+
+Cómo se comporta el pop-up (`src/components/PromoModal.astro`):
+
+- Sale al **entrar** al sitio: desde Google, Instagram, un link directo o al
+  recargar. Navegar entre páginas del sitio o volver atrás no lo abre, y en la
+  propia página de regalos no existe.
+- Elige un afiche al azar, sin repetir el de la visita anterior, y lleva a ese
+  producto (`/regalos-empresariales#slug`).
+- Los cuatro afiches van en el HTML con `loading="lazy"` dentro de un
+  `<dialog>` cerrado: el navegador descarga sólo el que se muestra.
+- **Cuesta LCP, y es esperable**: el afiche tapa la pantalla, así que pasa a
+  ser el elemento más grande. Medido en la home con 4G lenta y CPU ×4: sin
+  pop-up 0,3 s, con pop-up 1,9–2,1 s (debajo del umbral "bueno" de 2,5 s).
+  Por eso los afiches usan la calidad por defecto (58) y el elegido se pide
+  con `fetchpriority="high"`: a 78 el LCP pasaba de 2,5 s.
+
+`pnpm test:smoke` y `pnpm shots` entran con un referrer del propio sitio para
+que el pop-up no tape lo que prueban; el pop-up tiene su propia sección en el
+smoke test.
+
 ## Bordado y estampado
 
 El taller hace las dos técnicas, y eso condiciona el copy. La versión anterior

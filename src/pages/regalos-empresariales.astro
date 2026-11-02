@@ -1,0 +1,191 @@
+---
+import { getImage } from 'astro:assets'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PageHeader from '@/components/PageHeader.astro'
+import CoverImage from '@/components/CoverImage.astro'
+import Button from '@/components/Button.astro'
+import Icon from '@/components/icons/Icon.astro'
+import CtaSection from '@/components/CtaSection.astro'
+import StitchDivider from '@/components/StitchDivider.astro'
+import {
+  GIFTS,
+  DETAILED_GIFTS,
+  REGALOS_PATH,
+  FALLBACK_ALT,
+  FALLBACK_WHATSAPP,
+  formatGiftPrice,
+} from '@/lib/regalos-data'
+import { absoluteUrl, getWhatsappUrl } from '@/lib/site-config'
+import { webPage, giftCatalogNode } from '@/lib/structured-data'
+
+const title = 'Regalos empresariales personalizados'
+const description =
+  'Vasos térmicos, totebags y tablas parrilleras con el logo de tu empresa. Precios para empresas y envíos a todo Uruguay. Cotizá por WhatsApp.'
+
+// Flyers dropped into src/assets/ofertas/ with no data entry yet. They still
+// get a card, so a new offer is live as soon as the file is in the folder.
+const extraGifts = GIFTS.filter((gift) => !gift.info)
+const MORE_ID = 'mas-ofertas'
+
+const imageUrls = Object.fromEntries(
+  await Promise.all(
+    DETAILED_GIFTS.map(async (gift) => {
+      const rendered = await getImage({ src: gift.image, width: 900, format: 'webp', quality: 80 })
+      return [gift.slug, absoluteUrl(rendered.src)] as const
+    }),
+  ),
+)
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path={REGALOS_PATH}
+  jsonLd={[
+    webPage({ path: REGALOS_PATH, name: title, description, type: 'CollectionPage' }),
+    giftCatalogNode(imageUrls),
+  ]}
+>
+  <PageHeader
+    eyebrow="Regalos empresariales"
+    title="Regalos con la marca de tu empresa"
+    description="Vasos térmicos, totebags y tablas parrilleras personalizadas para regalar a clientes y equipos, para eventos y para fin de año. Precios para empresas y envíos a todo el Uruguay."
+  />
+
+  <nav class="border-b border-border bg-secondary" aria-label="Productos de regalo">
+    <ul class="mx-auto flex max-w-6xl flex-wrap gap-2 px-5 py-4 md:px-8">
+      {
+        [
+          ...DETAILED_GIFTS.map(({ slug, info }) => ({ href: `#${slug}`, label: info.shortName })),
+          ...(extraGifts.length > 0 ? [{ href: `#${MORE_ID}`, label: 'Más ofertas' }] : []),
+        ].map((chip) => (
+          <li>
+            <a
+              href={chip.href}
+              class="inline-flex rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-wood hover:text-foreground"
+            >
+              {chip.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <section class="py-16 md:py-24" aria-label="Catálogo de regalos empresariales">
+    <div class="mx-auto max-w-6xl space-y-20 px-5 md:space-y-28 md:px-8">
+      {
+        DETAILED_GIFTS.map(({ slug, image, info }, index) => (
+          <div>
+            <article
+              id={slug}
+              class="grid items-start gap-8 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-12"
+            >
+              {/*
+                The flyer is shown whole: it is mostly text, and any crop would
+                cut the price or the product name. The site's default quality
+                of 58 holds the small print fine (checked against 78, which
+                costs ~65% more bytes for no visible gain at this size).
+              */}
+              <CoverImage
+                src={image}
+                alt={info.imageAlt}
+                sizes="(min-width: 1152px) 470px, (min-width: 768px) 42vw, 90vw"
+                widths={[360, 480, 640, 820, 940]}
+                priority={index === 0}
+                class="rounded-sm shadow-sm ring-1 ring-border"
+              />
+
+              <div class="md:sticky md:top-28">
+                <h2 class="text-balance font-serif text-2xl font-semibold text-foreground md:text-3xl">
+                  {info.name}
+                </h2>
+                <p class="mt-3 text-pretty leading-relaxed text-muted-foreground">{info.description}</p>
+
+                <ul class="mt-6 divide-y divide-border rounded-sm border border-border bg-card" aria-label="Precios">
+                  {info.prices.map((price) => (
+                    <li class="flex items-baseline justify-between gap-4 px-4 py-3">
+                      <span class="text-sm text-muted-foreground">{price.label}</span>
+                      <span class="font-serif text-xl font-semibold whitespace-nowrap text-foreground">
+                        {formatGiftPrice(price)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                <dl class="mt-6 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
+                  {info.details.map((detail) => (
+                    <>
+                      <dt class="font-medium text-foreground">{detail.label}</dt>
+                      <dd class="text-muted-foreground">{detail.value}</dd>
+                    </>
+                  ))}
+                </dl>
+
+                <Button
+                  href={getWhatsappUrl(info.whatsappMessage)}
+                  external
+                  variant="wood"
+                  size="md"
+                  class="mt-8"
+                >
+                  <Icon name="message-circle" class="size-4" />
+                  Cotizar por WhatsApp
+                </Button>
+              </div>
+            </article>
+            {index < DETAILED_GIFTS.length - 1 && <StitchDivider class="mt-20 md:mt-28" />}
+          </div>
+        ))
+      }
+
+      {
+        extraGifts.length > 0 && (
+          <div>
+            {DETAILED_GIFTS.length > 0 && <StitchDivider class="mb-20 md:mb-28" />}
+            <h2 id={MORE_ID} class="font-serif text-2xl font-semibold text-foreground md:text-3xl">
+              Más ofertas
+            </h2>
+            {/*
+              Masonry columns, as in the gallery: flyers come in any proportion
+              and a fixed tile would crop the price off some of them.
+            */}
+            <ul class="mt-8 gap-6 [column-count:1] sm:[column-count:2] lg:[column-count:3]">
+              {extraGifts.map((gift) => (
+                <li id={gift.slug} class="mb-6 break-inside-avoid">
+                  <CoverImage
+                    src={gift.image}
+                    alt={FALLBACK_ALT}
+                    sizes="(min-width: 1152px) 340px, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                    widths={[360, 480, 640, 720]}
+                    class="rounded-sm shadow-sm ring-1 ring-border"
+                  />
+                  <Button
+                    href={getWhatsappUrl(FALLBACK_WHATSAPP)}
+                    external
+                    variant="wood"
+                    size="md"
+                    class="mt-3 w-full"
+                  >
+                    <Icon name="message-circle" class="size-4" />
+                    Consultar por WhatsApp
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      <p class="text-center text-sm text-subtle-foreground">
+        Precios por unidad, en pesos uruguayos. Para otras cantidades o productos, consultanos.
+      </p>
+    </div>
+  </section>
+
+  <CtaSection
+    title="¿Buscás otro regalo para tu empresa?"
+    description="También bordamos gorras, buzos y mochilas con tu logo. Contanos qué tenés en mente y te pasamos precio y plazos."
+    whatsappMessage="Hola Bordarte! Quiero cotizar regalos empresariales con el logo de mi empresa."
+  />
+</BaseLayout>

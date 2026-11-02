@@ -1,5 +1,6 @@
 import { siteConfig, absoluteUrl, OPENING_HOURS } from '@/lib/site-config'
 import { SERVICES, FAQS } from '@/lib/services-data'
+import { DETAILED_GIFTS, REGALOS_PATH } from '@/lib/regalos-data'
 
 export const ORG_ID = absoluteUrl('/#organization')
 export const WEBSITE_ID = absoluteUrl('/#website')
@@ -169,5 +170,46 @@ export function imageGalleryNode(
       creditText: siteConfig.name,
       creator: { '@id': ORG_ID },
     })),
+  }
+}
+
+/**
+ * One Offer per price line of the gift catalogue. `imageUrls` is keyed by slug
+ * and carries absolute URLs of the renditions the page actually serves.
+ */
+export function giftCatalogNode(imageUrls: Record<string, string>): Record<string, unknown> {
+  return {
+    '@type': 'OfferCatalog',
+    '@id': absoluteUrl(`${REGALOS_PATH}#catalogo`),
+    name: 'Regalos empresariales personalizados',
+    url: absoluteUrl(REGALOS_PATH),
+    itemListElement: DETAILED_GIFTS.flatMap(({ slug, info }) =>
+      info.prices.map((price) => ({
+        '@type': 'Offer',
+        name: info.prices.length > 1 ? `${info.name} — ${price.label}` : info.name,
+        url: absoluteUrl(`${REGALOS_PATH}#${slug}`),
+        price: price.amount,
+        priceCurrency: 'UYU',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: price.amount,
+          priceCurrency: 'UYU',
+          valueAddedTaxIncluded: price.ivaIncluded,
+        },
+        ...(info.minUnits && {
+          eligibleQuantity: { '@type': 'QuantitativeValue', minValue: info.minUnits },
+        }),
+        availability: 'https://schema.org/InStock',
+        areaServed: { '@type': 'Country', name: 'Uruguay' },
+        seller: { '@id': ORG_ID },
+        itemOffered: {
+          '@type': 'Product',
+          name: info.name,
+          description: info.description,
+          image: imageUrls[slug],
+          brand: { '@id': ORG_ID },
+        },
+      })),
+    ),
   }
 }

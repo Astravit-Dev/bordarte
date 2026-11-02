@@ -9,6 +9,11 @@ const BASE = process.env.BASE ?? 'http://127.0.0.1:8790'
 const results = []
 const ok = (name, pass, detail = '') => results.push({ name, pass, detail })
 
+// The offers pop-up opens whenever someone arrives from outside the site. The
+// sections below test other features, so they arrive the way a visitor who is
+// already browsing does: with a same-origin referrer, which keeps it closed.
+const FROM_INSIDE = { waitUntil: 'networkidle2', referer: `${BASE}/` }
+
 const browser = await puppeteer.launch({
   executablePath: '/usr/bin/google-chrome-stable',
   headless: 'new',
@@ -29,7 +34,7 @@ async function newPage() {
 // ---------------------------------------------------------------- mobile menu
 {
   const { page, violations } = await newPage()
-  await page.goto(`${BASE}/`, { waitUntil: 'networkidle2' })
+  await page.goto(`${BASE}/`, FROM_INSIDE)
 
   const hiddenBefore = await page.$eval('#mobile-nav', (n) => n.classList.contains('hidden'))
   await page.click('#menu-toggle')
@@ -52,7 +57,7 @@ async function newPage() {
 // ------------------------------------------------------- gallery filter + dialog
 {
   const { page, violations } = await newPage()
-  await page.goto(`${BASE}/galeria`, { waitUntil: 'networkidle2' })
+  await page.goto(`${BASE}/galeria`, FROM_INSIDE)
 
   const total = await page.$$eval('#gallery-grid > li', (n) => n.length)
   await page.click('.gallery-filter[data-category="personalizados"]')
@@ -94,7 +99,7 @@ async function newPage() {
 // ------------------------------------------------------------- quote form
 {
   const { page, violations } = await newPage()
-  await page.goto(`${BASE}/contacto`, { waitUntil: 'networkidle2' })
+  await page.goto(`${BASE}/contacto`, FROM_INSIDE)
 
   // The submit handler opens WhatsApp in a new tab; capture the URL instead.
   await page.evaluate(() => {
@@ -130,6 +135,47 @@ async function newPage() {
   ok('WebMCP description + 3 params', mcp.hasDescription && mcp.params === 3, `params=${mcp.params}`)
   ok('no-JS fallback posts to wa.me', /wa\.me/.test(mcp.noJsAction ?? ''), mcp.noJsAction ?? '')
   ok('no console errors (contacto)', violations.length === 0, violations.join(' | '))
+  await page.close()
+}
+
+// ------------------------------------------------------------ offers pop-up
+{
+  const { page, violations } = await newPage()
+  const isOpen = () => page.$eval('#promo-dialog', (d) => d.open).catch(() => null)
+
+  await page.goto(`${BASE}/`, { waitUntil: 'networkidle2' })
+  const opened = await isOpen()
+  const shown = await page.$$eval('[data-promo-item]', (n) => n.filter((a) => !a.hidden).length)
+  const downloaded = await page.$$eval('#promo-dialog img', (n) => n.filter((i) => i.currentSrc).length)
+  await page.keyboard.press('Escape')
+  const closedByEsc = (await isOpen()) === false
+
+  await page.click('#menu-toggle')
+  await Promise.all([
+    page.waitForNavigation({ waitUntil: 'networkidle2' }),
+    page.click('#mobile-nav a[href="/servicios"]'),
+  ])
+  const openAfterInternalNav = await isOpen()
+
+  await page.reload({ waitUntil: 'networkidle2' })
+  const reopenedOnReload = await isOpen()
+  const slug = await page.$eval('[data-promo-item]:not([hidden])', (a) => a.dataset.promoItem)
+  await Promise.all([
+    page.waitForNavigation({ waitUntil: 'networkidle2' }),
+    page.click(`[data-promo-item="${slug}"]`),
+  ])
+  const landed = page.url()
+  const dialogOnGiftsPage = await page.$('#promo-dialog')
+
+  ok('pop-up opens on direct entry', opened === true)
+  ok('pop-up shows exactly one flyer', shown === 1, `shown=${shown}`)
+  ok('pop-up downloads only that flyer', downloaded === 1, `downloaded=${downloaded}`)
+  ok('Escape closes pop-up', closedByEsc)
+  ok('pop-up stays closed on internal navigation', openAfterInternalNav === false)
+  ok('pop-up reopens on reload', reopenedOnReload === true)
+  ok('flyer links to its product', landed === `${BASE}/regalos-empresariales#${slug}`, landed)
+  ok('no pop-up on the gifts page itself', dialogOnGiftsPage === null)
+  ok('no console errors (pop-up)', violations.length === 0, violations.join(' | '))
   await page.close()
 }
 

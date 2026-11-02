@@ -4,8 +4,10 @@ import { getImage } from 'astro:assets'
 import SiteHeader from '@/components/SiteHeader.astro'
 import SiteFooter from '@/components/SiteFooter.astro'
 import WhatsappFloatButton from '@/components/WhatsappFloatButton.astro'
+import PromoModal from '@/components/PromoModal.astro'
 import { siteConfig, absoluteUrl } from '@/lib/site-config'
 import { buildOrganizationGraph } from '@/lib/structured-data'
+import { REGALOS_PATH } from '@/lib/regalos-data'
 import ogSource from '@/assets/images/gorras-calastretti.jpg'
 import '@/styles/global.css'
 
@@ -133,5 +135,7 @@ const graph = [...buildOrganizationGraph(), ...jsonLd]
 
     <SiteFooter />
     <WhatsappFloatButton />
+    {/* En la página de regalos el aviso sobra: la persona ya está donde lleva. */}
+    {path !== REGALOS_PATH && <PromoModal />}
   </body>
 </html>

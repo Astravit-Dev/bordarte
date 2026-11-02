@@ -31,6 +31,7 @@ export const OPENING_HOURS = [
 export const NAV_LINKS = [
   { href: '/', label: 'Inicio' },
   { href: '/servicios', label: 'Servicios' },
+  { href: '/regalos-empresariales', label: 'Regalos empresariales' },
   { href: '/galeria', label: 'Galería' },
   { href: '/nosotros', label: 'Nosotros' },
   { href: '/contacto', label: 'Contacto' },

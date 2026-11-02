@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro'
 import { siteConfig, absoluteUrl, OPENING_HOURS, getWhatsappUrl } from '@/lib/site-config'
 import { SERVICES, FAQS } from '@/lib/services-data'
 import { CATEGORIES, WORK_ITEMS, CLIENTS } from '@/lib/work-data'
+import { GIFTS, DETAILED_GIFTS, REGALOS_PATH, formatGiftPrice } from '@/lib/regalos-data'
 
 /**
  * llms.txt following the llmstxt.org structure: an H1, a blockquote summary,
@@ -76,6 +77,9 @@ export const GET: APIRoute = () => {
     `- [Servicios](${absoluteUrl('/servicios')}): las ${SERVICES.length} líneas de trabajo con mínimos, plazos y preguntas frecuentes`,
   )
   lines.push(
+    `- [Regalos empresariales](${absoluteUrl(REGALOS_PATH)}): ${GIFTS.length} ofertas de productos personalizables con el logo de la empresa, con precio`,
+  )
+  lines.push(
     `- [Galería](${absoluteUrl('/galeria')}): ${WORK_ITEMS.length} trabajos reales filtrables por categoría`,
   )
   lines.push(`- [Nosotros](${absoluteUrl('/nosotros')}): historia del taller, proceso de trabajo y cuándo conviene bordado o estampado`)
@@ -89,6 +93,22 @@ export const GET: APIRoute = () => {
       `- [${service.name}](${absoluteUrl(`/servicios/${service.slug}`)}): ${service.description} ` +
         `Mínimo: ${service.minUnits.toLowerCase()}. Plazo: ${service.turnaround}. ` +
         `${service.bullets.join('. ')}.`,
+    )
+  }
+  lines.push('')
+
+  lines.push('## Regalos empresariales')
+  lines.push('')
+  lines.push('Precios por unidad en pesos uruguayos. Se cotizan y piden por WhatsApp.')
+  lines.push('')
+  for (const { slug, info } of DETAILED_GIFTS) {
+    const prices = info.prices
+      .map((price) => `${price.label}: ${formatGiftPrice(price)}`)
+      .join('; ')
+    const details = info.details.map((detail) => `${detail.label}: ${detail.value}`).join('. ')
+    lines.push(
+      `- [${info.name}](${absoluteUrl(`${REGALOS_PATH}#${slug}`)}): ${info.description} ` +
+        [prices, details].filter(Boolean).map((part) => `${part}.`).join(' '),
     )
   }
   lines.push('')
